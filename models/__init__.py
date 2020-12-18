@@ -1,1 +1,1 @@
-from . import wrk_sp
+from . import wrksp
