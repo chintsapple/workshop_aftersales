@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+
+<!--Form view of Team-->
+    <record id="form_view_team" model="ir.ui.view">
+        <field name="name">form.view.team</field>
+        <field name="model">team.team</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="name" placeholder="Please enter your name e.g. Will Smith"/>
+                    <field name="birthdate"/>
+                    <field name="age"/>
+                    <field name="gender" widget="radio"/>
+                    <field name="high_edu"/>
+                    <field name="msg"/>
+                    <field name="template"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+<!-- Tree view of Team-->
+    <record id="tree_view_team" model="ir.ui.view">
+        <field name="name">tree.view.team</field>
+        <field name="model">team.team</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="birthdate"/>
+                <field name="gender"/>
+                <field name="high_edu"/>
+            </tree>
+        </field>
+    </record>
+
+<!-- Action of Team-->
+    <record id="action_team" model="ir.actions.act_window">
+        <field name="name">Employee</field>  <!-- This name is shown in menus so give it proper name -->
+        <field name="res_model">team.team</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+<!-- Menu of Workshop After sales application-->
+    <menuitem id="menu_aftr_sal" name="After sales"/>
+    <menuitem id="menu_aftr_sal_child" name="Team" parent="menu_aftr_sal"/>
+
+<!-- Menu of Team -->
+    <menuitem id="menu_team" action="action_team" parent="menu_aftr_sal"/>
+
+</odoo>
