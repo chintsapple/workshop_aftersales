@@ -9,19 +9,25 @@
         <field name="arch" type="xml">
             <form>
                 <sheet>
-                    <group name="grp_details" string="Personal Details" colspan="4" col="4">
+                    <group name="grp_pr_details" string="Personal Details" colspan="4" col="4">
                         <field name="name" placeholder="Please enter your name e.g. Will"/>
                         <field name="ls_name" placeholder="Last Name or Surname w.g. Smith"/>
                         <field name="gender" widget="radio"/>
                         <field name="marital_status"/>
-                        <field name="address" placeholder="Type Residential Address"/>
-                        <field name="per_address"/>
-                    </group>
-                    <group colspan="4" col="6">
+                        <field name="res_address" placeholder="Type Residential Address"/>
+                        <field name="per_address" placeholder="Type Permanent Address"/>
                         <field name="pin_code"/>
                         <field name="birthdate" help="Give your birthdate"/>  <!--help which we can say as tooltip-->
                         <field name="age"/>
                         <field name="high_edu"/>
+                    </group>
+                    <group name="grp_job_info" string="Job Info" colspan="4" col="4">
+                        <field name="title"/>
+                        <field name="emp_id"/>
+                        <field name="department_id"/>
+                        <field name="work_loc"/>
+                    </group>
+                    <group name="grp_emrgnc_info" string="Emergency Contact Info">
 
                     </group>
                     <separator string="Template"/>
@@ -41,6 +47,7 @@
                 <field name="birthdate"/>
                 <field name="gender"/>
                 <field name="high_edu"/>
+<!--                <field name="dep_name"/>-->
             </tree>
         </field>
     </record>
@@ -58,5 +65,42 @@
 
 <!-- Menu of Team -->
     <menuitem id="menu_team" action="action_team" parent="menu_aftr_sal_child"/>
+
+<!--    Form View for Department-->
+    <record id="form_view_dept" model="ir.ui.view">
+        <field name="name">form.view.dept</field>
+        <field name="model">team.department</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="dep_name"/>
+                    <field name="dep_code"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+<!--    Tree view for department -->
+    <record id="tree_view_dept" model="ir.ui.view">
+        <field name="name">tree.view.dept</field>
+        <field name="model">team.department</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="dep_name"/>
+                <field name="dep_code"/>
+<!--                <field name="work_loc"/>-->
+            </tree>
+        </field>
+    </record>
+
+<!--    Action for department-->
+    <record id="action_department" model="ir.actions.act_window">
+        <field name="name">Department</field>
+        <field name="res_model">team.department</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+<!--    menu for department-->
+    <menuitem id="menu_department" action="action_department" parent="menu_aftr_sal_child"/>
 
 </odoo>
