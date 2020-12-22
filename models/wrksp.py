@@ -15,13 +15,16 @@ class Team(models.Model):
     res_address = fields.Text('Residential Address', required=True)
     per_address = fields.Text('Permanent Address')
     pin_code = fields.Char('Pin Code', size=6)
-    email = fields.Char('Email')
     # birthdate = fields.Date('Birthday', required=True)
     birthdate = fields.Date('Birthday', default=fields.datetime(1980, 1, 1))
     marital_status = fields.Selection([('single', 'Single'),
                                        ('Married', 'Married'),
                                        ('separated', 'Separated')], 'Marital Status')
     age = fields.Integer('age', default=21)
+    blood = fields.Selection([('ab+', 'AB+'), ('ab-', 'AB-'),
+                              ('b+', 'B+'), ('b-', 'B-'),
+                              ('a+', 'A+'), ('a-', 'A-'),
+                              ('o+', 'O+'), ('o-', 'O-')], 'Blood Group', required=True)
     gender = fields.Selection([('male', 'Male'),
                                ('female', 'female')], 'Gender')
     high_edu = fields.Selection([('graduate', 'Graduate'),
@@ -35,11 +38,25 @@ class Team(models.Model):
     # Job Info
     title = fields.Char('Title')
     emp_id = fields.Char('Employee ID', size=4)
-    department_id = fields.Many2one('team.department', 'Department')
+    department_id = fields.Many2one('team.department', 'Department', ondelete='restrict')
     work_loc = fields.Selection([('ahmedabad', 'Ahmedabad'),
                                  ('baroda', 'Baroda'),
                                  ('anand', 'Anand'),
                                  ('surat', 'Surat')], 'Work Location')
+    phone = fields.Char('Phone')
+    email = fields.Char('Email')
+    salary_ids = fields.One2many('team.salary', 'employee_id', 'Salaries')
+    skill_ids = fields.Many2many('team.skill', 'team_skl_rel', 'team_id', 'skill_id', 'Skills')
+
+    # Emergency contact info
+    full_name = fields.Char('Full Name', required=True)
+    relationship = fields.Char('Relationship')
+    skills = fields.Selection([('0', 'Trainee'),
+                               ('1', 'Intern'),
+                               ('2', 'Novice'),
+                               ('3', 'Proficient'),
+                               ('4', 'Expert')], 'Automobile Skill')
+    contact = fields.Char('Contact Number')
 
 
 class Department(models.Model):
@@ -51,4 +68,24 @@ class Department(models.Model):
 
     dep_name = fields.Char('Department Name')
     dep_code = fields.Char('Code', size=4)
+
+
+class Salary(models.Model):
+
+    _name = 'team.salary'
+    _description = 'Salary'
+
+    month = fields.Selection([(str(ele), str(ele)) for ele in range(1, 13)], 'Month')
+    basic = fields.Float('Basic')
+    allowance = fields.Float('Allowance')
+    deduction = fields.Float('Deduction')
+    employee_id = fields.Many2one('team.team', 'Employee')
+
+
+class Skill(models.Model):
+
+    _name = 'team.skill'
+    _description = 'Skill'
+
+    name = fields.Char('Name')
 

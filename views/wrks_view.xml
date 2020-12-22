@@ -2,7 +2,7 @@
 
 <odoo>
 
-<!--Form view of Team-->
+<!--****************************Form view of Team************************* -->
     <record id="form_view_team" model="ir.ui.view">
         <field name="name">form.view.team</field>
         <field name="model">team.team</field>
@@ -19,6 +19,7 @@
                         <field name="pin_code"/>
                         <field name="birthdate" help="Give your birthdate"/>  <!--help which we can say as tooltip-->
                         <field name="age"/>
+                        <field name="blood" widget="selection"/>
                         <field name="high_edu"/>
                     </group>
                     <group name="grp_job_info" string="Job Info" colspan="4" col="4">
@@ -26,9 +27,20 @@
                         <field name="emp_id"/>
                         <field name="department_id"/>
                         <field name="work_loc"/>
+                        <field name="email" widget="url"/>
+                        <field name="skills" widget="priority"/>
+                        <field name="phone" widget="phone"/>
+                        <field name="skill_ids" widget="many2many_tags"/>
                     </group>
+                    <notebook>
+                        <page name="pg_salary" string="Salary">
+                            <field name="salary_ids"/>
+                        </page>
+                    </notebook>
                     <group name="grp_emrgnc_info" string="Emergency Contact Info">
-
+                        <field name="full_name"/>
+                        <field name="relationship" placeholder='Relationship with contact person e.g. Mother'/>
+                        <field name="contact" widget="phone"/>
                     </group>
                     <separator string="Template"/>
                         <field name="template" help="You can modify your text here like Bold, font color etc.."/>
@@ -66,7 +78,8 @@
 <!-- Menu of Team -->
     <menuitem id="menu_team" action="action_team" parent="menu_aftr_sal_child"/>
 
-<!--    Form View for Department-->
+
+<!--*******************Form View for Department****************************-->
     <record id="form_view_dept" model="ir.ui.view">
         <field name="name">form.view.dept</field>
         <field name="model">team.department</field>
@@ -102,5 +115,71 @@
 
 <!--    menu for department-->
     <menuitem id="menu_department" action="action_department" parent="menu_aftr_sal_child"/>
+
+
+<!--*******************Form View for Salary****************************-->
+    <record id="form_view_salary" model="ir.ui.view">
+        <field name="name">form.view.salary</field>
+        <field name="model">team.salary</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="month"/>
+                    <field name="basic"/>
+                    <field name="allowance"/>
+                    <field name="deduction"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+<!--    Tree view of Salary  -->
+    <record id="tree_view_salary" model="ir.ui.view">
+        <field name="name">tree.view.salary</field>
+        <field name="model">team.salary</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="month"/>
+                <field name="basic"/>
+                <field name="allowance"/>
+                <field name="deduction"/>
+            </tree>
+        </field>
+    </record>
+
+
+<!--*******************Form View for Skill****************************-->
+    <record id="form_view_skill" model="ir.ui.view">
+        <field name="name">form.view.skill</field>
+        <field name="model">team.skill</field>
+        <field name="arch" type="xml">
+            <form>
+                <group name="grp_skl">
+                    <field name="name"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+<!--    Tree view or skill  -->
+    <record id="tree_view_skill" model="ir.ui.view">
+        <field name="name">tree.view.skill</field>
+        <field name="model">team.skill</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+<!--    Action for skill  -->
+    <record id="action_skill" model="ir.actions.act_window">
+        <field name="name">Skills</field>
+        <field name="res_model">team.skill</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+<!--    Menu for skill  -->
+    <menuitem id="menu_skill" action="action_skill" parent="menu_aftr_sal_child"/>
 
 </odoo>
