@@ -34,6 +34,7 @@ class Team(models.Model):
                                  ('iti', 'ITI')], 'Highest Education')
     msg = fields.Text('Message')
     template = fields.Html('Template')
+    active = fields.Boolean('Active',  default=True)
 
     # Job Info
     title = fields.Char('Title')
@@ -45,8 +46,14 @@ class Team(models.Model):
                                  ('surat', 'Surat')], 'Work Location')
     phone = fields.Char('Phone')
     email = fields.Char('Email')
-    salary_ids = fields.One2many('team.salary', 'employee_id', 'Salaries')
+    salary_ids = fields.One2many('team.salary', 'employee_id', 'Salaries', limit=2)
     skill_ids = fields.Many2many('team.skill', 'team_skl_rel', 'team_id', 'skill_id', 'Skills')
+    resume = fields.Binary('Resume')
+    # resume = fields.Binary('Resume', attachment=False)  # by default attachment=True, that means whatever you
+    # upload in this field will be not stored in database, because it's binary field you only get 1(s) n 0(s)
+    # but if you want to stored in database you need to change attachment field to False and will be stored.
+    file_name = fields.Char('File Name')
+
 
     # Emergency contact info
     full_name = fields.Char('Full Name', required=True)
@@ -57,6 +64,10 @@ class Team(models.Model):
                                ('3', 'Proficient'),
                                ('4', 'Expert')], 'Automobile Skill')
     contact = fields.Char('Contact Number')
+    reference = fields.Reference([('team.team', 'Team'),
+                                  ('team.department', 'Department')], 'Reference')
+    currency_id = fields.Many2one('res.currency', 'Currency')
+    last_sal = fields.Monetary(currency_field='currency_id', string='Last Salary')
 
 
 class Department(models.Model):
@@ -79,7 +90,7 @@ class Salary(models.Model):
     basic = fields.Float('Basic')
     allowance = fields.Float('Allowance')
     deduction = fields.Float('Deduction')
-    employee_id = fields.Many2one('team.team', 'Employee')
+    employee_id = fields.Many2one('team.team', 'Employee', ondelete='cascade')
 
 
 class Skill(models.Model):

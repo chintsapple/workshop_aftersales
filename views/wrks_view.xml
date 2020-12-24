@@ -15,7 +15,7 @@
                         <field name="gender" widget="radio"/>
                         <field name="marital_status"/>
                         <field name="res_address" placeholder="Type Residential Address"/>
-                        <field name="per_address" placeholder="Type Permanent Address"/>
+                        <field name="per_address" placeholder="Leave blank if Permanent address is same as Residential address.."/>
                         <field name="pin_code"/>
                         <field name="birthdate" help="Give your birthdate"/>  <!--help which we can say as tooltip-->
                         <field name="age"/>
@@ -25,12 +25,17 @@
                     <group name="grp_job_info" string="Job Info" colspan="4" col="4">
                         <field name="title"/>
                         <field name="emp_id"/>
-                        <field name="department_id"/>
+                        <field name="department_id" options="{'no_create':1, 'no_open':1}"/>
                         <field name="work_loc"/>
                         <field name="email" widget="url"/>
                         <field name="skills" widget="priority"/>
                         <field name="phone" widget="phone"/>
                         <field name="skill_ids" widget="many2many_tags"/>
+                        <field name="reference"/>
+                        <field name="currency_id"/>
+                        <field name="last_sal"/>
+                        <field name="resume" filename="file_name"/>
+                        <field name="file_name" invisible="1"/>
                     </group>
                     <notebook>
                         <page name="pg_salary" string="Salary">
@@ -56,9 +61,11 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
+                <field name="active" widget="boolean_toggle"/>
                 <field name="birthdate"/>
                 <field name="gender"/>
                 <field name="high_edu"/>
+                <field name="phone" widget="phone"/>
 <!--                <field name="dep_name"/>-->
             </tree>
         </field>
