@@ -1,3 +1,9 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_team_manager,access.team.manager,model_team_team,grp_mngr,1,1,1,1
 access_team_user,access.team.manager,model_team_team,grp_usr,1,1,1,0
+access_department_manager,access.department.manager,model_team_department,grp_mngr,1,1,1,1
+access_department_user,access.department.manager,model_team_department,grp_usr,1,1,1,0
+access_salary_manager,access.salary.manager,model_team_salary,grp_mngr,1,1,1,1
+access_salary_user,access.salary.manager,model_team_salary,grp_usr,1,1,1,0
+access_skill_manager,access.skill.manager,model_team_skill,grp_mngr,1,1,1,1
+access_skill_user,access.skill.manager,model_team_skill,grp_usr,1,1,1,0
