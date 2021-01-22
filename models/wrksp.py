@@ -2,7 +2,6 @@ from odoo import models, fields, api
 
 
 class Team(models.Model):
-
     _name = 'team.team'
     _description = 'Team'
     _auto = True  # this by default true, here I have mentioned for understanding only, it creates table automatically
@@ -40,7 +39,7 @@ class Team(models.Model):
                                  ('iti', 'ITI')], 'Highest Education')
     msg = fields.Text('Message')
     template = fields.Html('Template')
-    active = fields.Boolean('Active',  default=True)
+    active = fields.Boolean('Active', default=True)
     photo = fields.Image('Photo')
 
     # Job Info
@@ -140,7 +139,7 @@ class Team(models.Model):
         On click it will print language, current company, current user, context from environment,
         recordset of the model.
         """
-        print("*"*100)
+        print("*" * 100)
         print("11. Current Language of the System: ", self.env.lang)
         print("12. Current Company: ", self.env.company)
         print("12.1 Current Company Name: ", self.env.company.name)
@@ -150,7 +149,7 @@ class Team(models.Model):
         # print("16. Value of all predefined fields: ", list(self.env.values()))
 
         all_team = self.search([])
-        print(all_team)
+        print('all_team', all_team)
         positive_blood = all_team.filtered(lambda r: r.blood in ('ab+', 'a+', 'b+', 'o+'))
         print("17. Employee with Positive Blood Group:", positive_blood)
         # for p_blood in positive_blood:
@@ -162,6 +161,15 @@ class Team(models.Model):
 
         print('20. List of values of Title field:', all_team.mapped('title'))
         print('21. Recordset in descending order of Title field:', all_team.sorted('title', reverse=True))
+        # TODO: TypeError: '<' not supported between instances of 'str' and 'bool'
+        #                   Got this error comes due to I have not assigned `Title` field to all employee.
+        #                   So when I tried to get `all_team.mapped('title')` it gives output like this:
+        #       20. List of values of Title field: ['Maintenance Technician', 'System Technician (Drive Train)',
+        #          'ITI', 'Human Resource', 'ITI', 'Diagnose Technician', 'System Technician',
+        #          'Maintenance Technician', 'ITI', 'Vice President Landmark', False, False, False, False, False,
+        #          False, False, False, False, False], this all False is boolean field because I haven't give any
+        #          values in it so boolean values can't be sorted and other fields is a string where as False is
+        #          boolean so sorted operation can't be performed, by giving values in `Title` field it will work.
 
         all_tech = self.search([])
         graduate_tech = self.search([('high_edu', '=', 'graduate')])
@@ -200,19 +208,68 @@ class Team(models.Model):
 
     def add_skill(self):
         """
-        Create record for Skill Model
+        Create new record for Skill Model
         """
         skill_obj = self.env['team.skill']
         skill_obj.create([{'name': 'Wiring Repair'},
                           {'name': 'Measurements'},
                           {'name': 'Break Bleeding'}])
 
+    def add_team(self):
+        """
+        Create new record for Skill Model
+        """
+        emp_val_list = [{
+            'name': 'Radhika',
+            'ls_name': 'Dube',
+            'age': 28,
+            'gender': 'female',
+            'res_address': 'Pune',
+            'blood': 'ab+',
+            'salary_ids': [(0, 0, {  # One2many fields
+                'month': '2',
+                'basic': 35000,
+                'deduction': 3500,
+                'allowance': 2000
+            }), (0, 0, {
+                'deduction': 4000,
+                'month': '3',
+                'allowance': 5000,
+                'basic': 35000
+            })],
+            'skill_ids': [(4, 1), (4, 3), (4, 4)],  # Many2many fields
+            'full_name': 'Usha Dube',
+
+        }, {
+            'name': 'Harshil',
+            'ls_name': 'Patel',
+            'age': 27,
+            'gender': 'male',
+            'res_address': 'Ahmedabad',
+            'department_id': 4,
+            'blood': 'b+',
+            'salary_ids': [(0, 0, {  # One2many fields
+                'month': '2',
+                'basic': 35000,
+                'deduction': 3500,
+                'allowance': 2000
+            }), (0, 0, {
+                'deduction': 4000,
+                'month': '3',
+                'allowance': 5000,
+                'basic': 35000
+            })],
+            'skill_ids': [(6, 0, [1, 5, 10])],
+            'full_name': 'Nimisha Patel'
+        }]
+        self.create(emp_val_list)
+
     # TODO: 25. Add a button on the form view on the page of a one2many field. When you click
     #           this button it will add a record in the one2many field.
 
     def add_sal(self):
         """
-        Create record for Salary
+        Create/write record for One2many field Salary.
         """
         salaries = {
             'salary_ids': [(0, 0, {
@@ -230,9 +287,92 @@ class Team(models.Model):
 
         self.write(salaries)
 
+    # TODO: 27. Add another button on the page of one2many field when you click on this button
+    #           it will remove one record but it will not remove it from the database.
+
+    def del_sal(self):
+        """
+        Delete existing record but not from the database.
+        """
+        delete_sal = {
+            'salary_ids': [(3, 65), (3, 66)]
+        }
+        self.write(delete_sal)
+
+    # TODO: 28. Add another button on the page of one2many field when you click on this button
+    #           it will remove all the records in one2many.
+
+    def del_all_sal(self):
+        """
+        Delete all existing record but not from the database.
+        """
+        delete_sal = {
+            'salary_ids': [(5,)]
+        }
+        self.write(delete_sal)
+
+    # TODO: 26. Add a button on the form view. When you click this button it should update a
+    #           field’s value of the current record.
+
+    def update_rec(self):
+        """
+        Update Existing record
+        """
+        em = {'email': 'abc@ymail.com'}
+        self.write(em)
+
+    # TODO: 29. Add a button on the form view when you click on it, it will link few existing
+    #           records to the current model’s many2many field.
+
+    def update_emp_skill(self):
+        """
+        Update skills of particular Employee
+        """
+        new_skill = {'skill_ids': [(4, 10), (4, 20)]}
+        self.write(new_skill)
+
+    # TODO: 30. Fetch 15 records from a model skipping first 5 records based on a condition and it
+    #           should be sorted by name. `Here I give offset of 2 because recode does not have 15 ITI emp.
+
+    def search_iti(self):
+        """
+        Search employees with ITI education
+        """
+        print("*" * 100)
+        all_emps = self.search([])
+        print("All Employees: ", all_emps)
+        iti_emps = self.search([('high_edu', '=', 'iti')])
+        print("All ITI employees: ", iti_emps)
+        iti_emps = self.search([('high_edu', '=', 'iti')], limit=15, offset=2, order='name')
+        print("Employees with ITI education order by name : ", iti_emps)
+        print("*" * 100)
+
+    @api.model
+    def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
+        print("DOM", domain)
+        print("FIELDS", fields)
+        print("GROUP BY", groupby)
+        print("OFFSET", offset)
+        print("LIMIT", limit)
+        print("ORDER BY", orderby)
+        print("LAZY", lazy)
+        res = super(Team, self).read_group(domain, fields, groupby, offset=offset, limit=limit, orderby=orderby,
+                                           lazy=lazy)
+        print("RESULT", res)
+        return res
+
+    # TODO: 31. Fetch the no of records based on a condition with and without using search method.
+
+    def read_rec(self):
+        """
+        Read records of given fields
+        """
+        self.search([])
+        emp_name_exp = self.read(['name', 'comp_name', 'exp'])  # load=''
+        print(emp_name_exp)
+
 
 class Department(models.Model):
-
     _name = 'team.department'
     _description = 'Department'
 
@@ -243,7 +383,6 @@ class Department(models.Model):
 
 
 class Salary(models.Model):
-
     _name = 'team.salary'
     _description = 'Salary'
 
@@ -251,7 +390,8 @@ class Salary(models.Model):
     basic = fields.Float('Basic')
     allowance = fields.Float('Allowance')
     deduction = fields.Float('Deduction')
-    employee_id = fields.Many2one('team.team', 'Employee', ondelete='cascade')
+    employee_id = fields.Many2one('team.team', 'Employee')
+    # employee_id = fields.Many2one('team.team', 'Employee', ondelete='cascade')
     gross_sal = fields.Float('Gross', compute='_calc_net_gross')
     net_sal = fields.Float('Net', compute='_calc_net_gross')
 
@@ -263,7 +403,6 @@ class Salary(models.Model):
 
 
 class Skill(models.Model):
-
     _name = 'team.skill'
     _description = 'Skill'
 

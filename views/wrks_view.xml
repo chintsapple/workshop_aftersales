@@ -11,6 +11,7 @@
                 <sheet>
                     <header>
                         <button name="print_detail" string="Details" type="object"/>
+                        <button name="add_team" string="New Employee" type="object"/>
                         <field name="state"
                                widget="statusbar"
                                clickable="1" statusbar_visible="applied,joined,left"/>
@@ -44,18 +45,25 @@
                                        'readonly': [('comp_name', '=', False)]}"/>
                         <field name="title"/>
                         <field name="emp_id"/>
+                        <!--TODO: 1. In the many2one field only the records which are having ‘it’
+                                     should be allowed to select-->
                         <field name="department_id"
                                options="{'no_create':1, 'no_open':1}"
                                domain="[('dep_code', 'ilike', 'it')]"/>
+
                         <field name="work_loc"/>
-                        <field name="email" widget="url"/>
+                        <field name="email" widget="email"/>
                         <field name="skills" widget="priority"/>
                         <field name="phone" widget="phone"/>
+                        <!-- TODO: 2. In the many2many field only the records which are ending with
+                                     ‘ts’ should be allowed to select.-->
                         <field name="skill_ids"
                                widget="many2many_tags"
-                               domain="[('name', 'ilike', 'ts')]"/>
+                               domain="[('name', '=ilike', '%ts')]"/>
+
                         <field name="reference"/>
-                        <field name="parent_id"/>
+                        <field name="parent_id" domain="[('id', '!=', active_id)]"/>
+
                         <field name="currency_id"/>
                         <field name="last_sal"/>
                         <field name="total_gross_sal"/>
@@ -70,6 +78,8 @@
                         <page name="pg_salary" string="Salary">
                             <field name="salary_ids"/>
                             <button name="add_sal" string="Add Salary" type="object"/>
+                            <button name="del_sal" string="Delete Salary" type="object"/>
+                            <button name="del_all_sal" string="Delete All Salary" type="object"/>
                         </page>
                         <page name="pg_temp" string="Template">
                             <field name="template" help="You can modify your text here like Bold, font color etc.."/>
@@ -90,6 +100,10 @@
                 </sheet>
                 <footer>
                     <button name="add_skill" string="Add Skill" type="object"/>
+                    <button name="update_rec" string="Update" type="object"/>
+                    <button name="update_emp_skill" string="Update Skills" type="object"/>
+                    <button name="search_iti" string="ITI Employees" type="object"/>
+                    <button name="read_rec" string="Name and experience" type="object"/>
                 </footer>
             </form>
         </field>
@@ -126,13 +140,13 @@
             <search>
                 <field name="name"/>
 
-                <!--TODO: 5. Create atleast two filters to filter the records on your list view.-->
+                <!--TODO: 5. Create at least two filters to filter the records on your list view.-->
                 <filter name="iti" string="ITI"
                         domain="[('high_edu', '=', 'iti')]"/>
                 <filter name="age_gt_25" string="Age > 25"
                         domain="[('age', '>', '25')]"/>
 
-                <!--TODO: <filter name="dept" string="CST" domain="[('department_id', '=', '3')]"/>
+                <!--TODO: <filter name="dept" string="CST" domain="[('department_id', '=', 3)]"/>
                           I. add filter so that can show only `iti` and `cst`, ('dep_code', 'ilike', 'cst')
                           II. domain="[('high_edu', '=', 'iti'), ('gender', '=', 'male')]
                           III. domain="[('department_id', '=', '3')] -->
@@ -155,6 +169,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
+    <!--TODO 4. Create an action and add a domain on this action to display specific records.-->
     <!-- Action of Team Graduates Technician-->
     <record id="action_team_tech" model="ir.actions.act_window">
         <field name="name">Graduates</field>  <!-- This name is shown in menus so give it proper name -->
