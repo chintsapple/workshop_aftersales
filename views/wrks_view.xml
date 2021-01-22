@@ -2,44 +2,94 @@
 
 <odoo>
 
-<!--****************************Form view of Team************************* -->
+    <!--****************************Form view of Team************************* -->
     <record id="form_view_team" model="ir.ui.view">
         <field name="name">form.view.team</field>
         <field name="model">team.team</field>
         <field name="arch" type="xml">
             <form>
                 <sheet>
-                    <group name="grp_pr_details" string="Personal Details" colspan="4" col="4">
+                    <header>
+                        <button name="print_detail" string="Details" type="object"/>
+                        <button name="add_team" string="New Employee" type="object"/>
+                        <field name="state"
+                               widget="statusbar"
+                               clickable="1" statusbar_visible="applied,joined,left"/>
+                    </header>
+                    <group name="grp_pr_details" string="Personal Details">
+                        <field name="photo" widget="image" class="oe_avatar" nolabel="1" help="Upload your Photo"/>
+                    </group>
+                    <group colspan="4" col="4">
+                        <!--                        <field name="sequence"/>-->
                         <field name="name" placeholder="Please enter your name e.g. Will"/>
                         <field name="ls_name" placeholder="Last Name or Surname w.g. Smith"/>
                         <field name="gender" widget="radio"/>
                         <field name="marital_status"/>
                         <field name="res_address" placeholder="Type Residential Address"/>
-                        <field name="per_address" placeholder="Leave blank if Permanent address is same as Residential address.."/>
+                        <field name="per_address"
+                               placeholder="Leave blank if Permanent address is same as Residential address.."/>
                         <field name="pin_code"/>
                         <field name="birthdate" help="Give your birthdate"/>  <!--help which we can say as tooltip-->
                         <field name="age"/>
                         <field name="blood" widget="selection"/>
                         <field name="high_edu"/>
                     </group>
+
+                    <!--******************** Job Info ******************************-->
                     <group name="grp_job_info" string="Job Info" colspan="4" col="4">
+                        <!-- TODO: 7. Add a character field and an integer field. When there is a value in the character
+                                      field the integer field should be mandatory else readonly. -->
+                        <field name="comp_name"/>
+                        <field name="exp" placeholder="Experience in Years"
+                               attrs="{'required': [('comp_name', '!=', False)],
+                                       'readonly': [('comp_name', '=', False)]}"/>
                         <field name="title"/>
                         <field name="emp_id"/>
-                        <field name="department_id" options="{'no_create':1, 'no_open':1}"/>
+                        <!--TODO: 1. In the many2one field only the records which are having ‘it’
+                                     should be allowed to select-->
+                        <field name="department_id"
+                               options="{'no_create':1, 'no_open':1}"
+                               domain="[('dep_code', 'ilike', 'it')]"/>
+
                         <field name="work_loc"/>
-                        <field name="email" widget="url"/>
+                        <field name="email" widget="email"/>
                         <field name="skills" widget="priority"/>
                         <field name="phone" widget="phone"/>
-                        <field name="skill_ids" widget="many2many_tags"/>
+                        <!-- TODO: 2. In the many2many field only the records which are ending with
+                                     ‘ts’ should be allowed to select.-->
+                        <field name="skill_ids"
+                               widget="many2many_tags"
+                               domain="[('name', '=ilike', '%ts')]"/>
+
                         <field name="reference"/>
+                        <field name="parent_id" domain="[('id', '!=', active_id)]"/>
+
                         <field name="currency_id"/>
                         <field name="last_sal"/>
+                        <field name="total_gross_sal"/>
+                        <field name="total_net_sal"/>
+                    </group>
+                    <group name="grp_attachment" string="Attachments" colspan="4" col="4">
                         <field name="resume" filename="file_name"/>
                         <field name="file_name" invisible="1"/>
+                        <field name="add_cover_letter" widget="boolean_toggle"/>
                     </group>
                     <notebook>
                         <page name="pg_salary" string="Salary">
                             <field name="salary_ids"/>
+                            <button name="add_sal" string="Add Salary" type="object"/>
+                            <button name="del_sal" string="Delete Salary" type="object"/>
+                            <button name="del_all_sal" string="Delete All Salary" type="object"/>
+                        </page>
+                        <page name="pg_temp" string="Template">
+                            <field name="template" help="You can modify your text here like Bold, font color etc.."/>
+                        </page>
+                        <!-- TODO: 8. Add a boolean field and a text field. Put the text field in a separate page. Now
+                                   when the boolean field is checked then the page should be visible else it should be
+                                   invisible.-->
+                        <page name="pg_cover" string="Cover Letter"
+                              attrs="{'invisible': [('add_cover_letter', '=', False)]}">
+                            <field name="cover_let" placeholder="Write Cover Letter"/>
                         </page>
                     </notebook>
                     <group name="grp_emrgnc_info" string="Emergency Contact Info">
@@ -47,46 +97,103 @@
                         <field name="relationship" placeholder='Relationship with contact person e.g. Mother'/>
                         <field name="contact" widget="phone"/>
                     </group>
-                    <separator string="Template"/>
-                        <field name="template" help="You can modify your text here like Bold, font color etc.."/>
                 </sheet>
+                <footer>
+                    <button name="add_skill" string="Add Skill" type="object"/>
+                    <button name="update_rec" string="Update" type="object"/>
+                    <button name="update_emp_skill" string="Update Skills" type="object"/>
+                    <button name="search_iti" string="ITI Employees" type="object"/>
+                    <button name="read_rec" string="Name and experience" type="object"/>
+                </footer>
             </form>
         </field>
     </record>
 
-<!-- Tree view of Team-->
+    <!-- Tree view of Team-->
     <record id="tree_view_team" model="ir.ui.view">
         <field name="name">tree.view.team</field>
         <field name="model">team.team</field>
         <field name="arch" type="xml">
             <tree>
+                <field name="sequence" widget="handle"/>
                 <field name="name"/>
+                <field name="ls_name"/>
                 <field name="active" widget="boolean_toggle"/>
                 <field name="birthdate"/>
                 <field name="gender"/>
                 <field name="high_edu"/>
                 <field name="phone" widget="phone"/>
+                <field name="total_gross_sal"/>
+                <field name="total_net_sal"/>
+                <field name="percent" widget="progressbar"/>
+                <!--                <field name="percent" widget="percentpie"/>-->
 <!--                <field name="dep_name"/>-->
             </tree>
         </field>
     </record>
 
-<!-- Action of Team-->
+    <!-- Search View for Team -->
+    <record id="search_team" model="ir.ui.view">
+        <field name="name">search.team</field>
+        <field name="model">team.team</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+
+                <!--TODO: 5. Create at least two filters to filter the records on your list view.-->
+                <filter name="iti" string="ITI"
+                        domain="[('high_edu', '=', 'iti')]"/>
+                <filter name="age_gt_25" string="Age > 25"
+                        domain="[('age', '>', '25')]"/>
+
+                <!--TODO: <filter name="dept" string="CST" domain="[('department_id', '=', 3)]"/>
+                          I. add filter so that can show only `iti` and `cst`, ('dep_code', 'ilike', 'cst')
+                          II. domain="[('high_edu', '=', 'iti'), ('gender', '=', 'male')]
+                          III. domain="[('department_id', '=', '3')] -->
+
+                <!--TODO: 6. Create at least two group by to group the records.-->
+                <filter name="grp_by_gender" string="Gender"
+                        context="{'group_by' : 'gender'}"/>
+                <filter name="grp_by_depart" string="Department"
+                        context="{'group_by' : 'department_id'}"/>
+                <filter name="grp_by_state" string="State"
+                        context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action of Team-->
     <record id="action_team" model="ir.actions.act_window">
         <field name="name">Employee</field>  <!-- This name is shown in menus so give it proper name -->
         <field name="res_model">team.team</field>
         <field name="view_mode">tree,form</field>
     </record>
 
-<!-- Menu of Workshop After sales application-->
+    <!--TODO 4. Create an action and add a domain on this action to display specific records.-->
+    <!-- Action of Team Graduates Technician-->
+    <record id="action_team_tech" model="ir.actions.act_window">
+        <field name="name">Graduates</field>  <!-- This name is shown in menus so give it proper name -->
+        <field name="res_model">team.team</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('high_edu', '=', 'graduate')]</field>
+
+        <!-- TODO: 9. When an action is called need to have a default group by on your state field.
+                  10. Now on the action where you have put domain I want the field of the domain to
+                      assigned by default but only when the view is opened from that action.-->
+        <field name="context">{'default_high_edu': 'graduate',
+                                'search_default_grp_by_state':1}</field>
+    </record>
+
+    <!-- Menu of Workshop After sales Team application-->
     <menuitem id="menu_aftr_sal" name="After sales"/>
     <menuitem id="menu_aftr_sal_child" name="Team" parent="menu_aftr_sal"/>
 
-<!-- Menu of Team -->
+    <!-- Menu of Team -->
     <menuitem id="menu_team" action="action_team" parent="menu_aftr_sal_child"/>
+    <menuitem id="menu_technician" action="action_team_tech" parent="menu_aftr_sal_child"/>
 
 
-<!--*******************Form View for Department****************************-->
+    <!--*******************Form View for Department****************************-->
     <record id="form_view_dept" model="ir.ui.view">
         <field name="name">form.view.dept</field>
         <field name="model">team.department</field>
@@ -100,7 +207,7 @@
         </field>
     </record>
 
-<!--    Tree view for department -->
+    <!--    Tree view for department -->
     <record id="tree_view_dept" model="ir.ui.view">
         <field name="name">tree.view.dept</field>
         <field name="model">team.department</field>
@@ -108,23 +215,23 @@
             <tree>
                 <field name="dep_name"/>
                 <field name="dep_code"/>
-<!--                <field name="work_loc"/>-->
+                <!--                <field name="work_loc"/>-->
             </tree>
         </field>
     </record>
 
-<!--    Action for department-->
+    <!--    Action for department-->
     <record id="action_department" model="ir.actions.act_window">
         <field name="name">Department</field>
         <field name="res_model">team.department</field>
         <field name="view_mode">tree,form</field>
     </record>
 
-<!--    menu for department-->
+    <!--    menu for department-->
     <menuitem id="menu_department" action="action_department" parent="menu_aftr_sal_child"/>
 
 
-<!--*******************Form View for Salary****************************-->
+    <!--*******************Form View for Salary****************************-->
     <record id="form_view_salary" model="ir.ui.view">
         <field name="name">form.view.salary</field>
         <field name="model">team.salary</field>
@@ -135,12 +242,14 @@
                     <field name="basic"/>
                     <field name="allowance"/>
                     <field name="deduction"/>
+                    <field name="gross_sal"/>
+                    <field name="net_sal"/>
                 </group>
             </form>
         </field>
     </record>
 
-<!--    Tree view of Salary  -->
+    <!--    Tree view of Salary  -->
     <record id="tree_view_salary" model="ir.ui.view">
         <field name="name">tree.view.salary</field>
         <field name="model">team.salary</field>
@@ -150,12 +259,14 @@
                 <field name="basic"/>
                 <field name="allowance"/>
                 <field name="deduction"/>
+                <field name="gross_sal"/>
+                <field name="net_sal"/>
             </tree>
         </field>
     </record>
 
 
-<!--*******************Form View for Skill****************************-->
+    <!--*******************Form View for Skill****************************-->
     <record id="form_view_skill" model="ir.ui.view">
         <field name="name">form.view.skill</field>
         <field name="model">team.skill</field>
@@ -168,7 +279,7 @@
         </field>
     </record>
 
-<!--    Tree view or skill  -->
+    <!--    Tree view or skill  -->
     <record id="tree_view_skill" model="ir.ui.view">
         <field name="name">tree.view.skill</field>
         <field name="model">team.skill</field>
@@ -179,14 +290,14 @@
         </field>
     </record>
 
-<!--    Action for skill  -->
+    <!--    Action for skill  -->
     <record id="action_skill" model="ir.actions.act_window">
         <field name="name">Skills</field>
         <field name="res_model">team.skill</field>
         <field name="view_mode">tree,form</field>
     </record>
 
-<!--    Menu for skill  -->
+    <!--    Menu for skill  -->
     <menuitem id="menu_skill" action="action_skill" parent="menu_aftr_sal_child"/>
 
 </odoo>
