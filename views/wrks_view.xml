@@ -62,7 +62,18 @@
                                domain="[('name', '=ilike', '%ts')]"/>
 
                         <field name="reference"/>
-                        <field name="parent_id" domain="[('id', '!=', active_id)]"/>
+                        <!--TODO 3. In the field which is taken for the hierarchy it should not show the current account
+                                    on which you are.
+                                    ::: means person can't be manager of himself-->
+                        <field name="parent_id"
+                               domain="['&amp;', ('id', '=', [1, 4, 13]), ('id', '!=', active_id)]"
+                               widget="selection" />
+                        <!-- domain="['&', ('id', '=', [1, 4, 13]), ('id', '!=', active_id)]" Gives error. -->
+                        <!-- for some cases like in here to we can't give operator `&` directly like this in
+                             XML, to use AND operator or some other mentioned below we need to use it lke this:
+                             `&` ==> `&amp;` ==> ampersand
+                             `<` ==> `&lt;` ==> less than
+                             this 2 are strictly illegal to use in XML directly. -->
 
                         <field name="currency_id"/>
                         <field name="last_sal"/>
@@ -145,11 +156,16 @@
                         domain="[('high_edu', '=', 'iti')]"/>
                 <filter name="age_gt_25" string="Age > 25"
                         domain="[('age', '>', '25')]"/>
+                <filter name="dept" string="ITI CST"
+                        domain="[('department_id', '=', 3), ('high_edu', '=', 'iti')]"/>
 
                 <!--TODO: <filter name="dept" string="CST" domain="[('department_id', '=', 3)]"/>
+                          We can do this earlier it gives error because I pass `department_id = '3'` id is integer field
                           I. add filter so that can show only `iti` and `cst`, ('dep_code', 'ilike', 'cst')
+                             but we can't use dep_code as domain because in view of our model we have not mentioned
+                             this field, so first I need to add dep_code field in view than it can be possible
                           II. domain="[('high_edu', '=', 'iti'), ('gender', '=', 'male')]
-                          III. domain="[('department_id', '=', '3')] -->
+                          III. domain="[('department_id', '=', 3)] -->
 
                 <!--TODO: 6. Create at least two group by to group the records.-->
                 <filter name="grp_by_gender" string="Gender"
