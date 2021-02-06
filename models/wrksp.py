@@ -1,10 +1,13 @@
 from odoo import models, fields, api
 
+from odoo.exceptions import ValidationError
+
 
 class Team(models.Model):
     _name = 'team.team'
     _description = 'Team'
-    _auto = True  # this by default true, here I have mentioned for understanding only, it creates table automatically
+    _auto = True  # this by default true, here I have mentioned for understanding only,
+#                   it creates table automatically
     _table = 'team'  # This is given so we explicitly give table a name else table name will be team_team
     _order = 'sequence'  # used to show records in ascending order.
     _parent_name = 'parent_id'  # Used to have parent child hierarchy to itself
@@ -13,6 +16,13 @@ class Team(models.Model):
     # This makes it faster to search in the hierarchy, when true we all need to give path
     # Default value is given but if you change the field name,
     # you have to give that field as your _parent_name
+
+    # TODO 4.13. Add an SQL constraint to add a check constraint to check the value of a field.
+    #      4.18. Add an SQL constraint to check a field’s value is not greater than a specific number.
+    _sql_constraints = [
+        ('check_age', 'check(age >= 18)', 'Child labor not allowed!'),
+        ('check_exp', 'check(exp <= 10)', ' You have 10+ years of experience, now live life.'),
+    ]
 
     # Personal info:
     name = fields.Char('First Name', required=True)
@@ -46,20 +56,31 @@ class Team(models.Model):
     comp_name = fields.Char('Company Name')
     exp = fields.Integer('Experience', help='Type experience in Years')
     title = fields.Char('Title')
-    emp_id = fields.Char('Employee ID', size=4)
+    emp_id = fields.Char('Employee ID')
+    emp_code = fields.Char('Employee Code')
     department_id = fields.Many2one('team.department', 'Department', ondelete='restrict')
     work_loc = fields.Selection([('ahmedabad', 'Ahmedabad'),
                                  ('baroda', 'Baroda'),
                                  ('anand', 'Anand'),
                                  ('surat', 'Surat')], 'Work Location')
     phone = fields.Char('Phone')
-    email = fields.Char('Email')
+    email = fields.Char('Email address')
 
     salary_ids = fields.One2many('team.salary', 'employee_id', 'Salaries')
     total_gross_sal = fields.Float('Total Gross', compute='_calc_total_sal')
     # compute fields are not stored in database, with this attr `store=True` you can stored
     total_net_sal = fields.Float('Total Net', compute='_calc_total_sal')
     percent = fields.Float('Percentage', compute='_calc_total_sal')
+
+    # TODO: 4.14. Add an object constraint to make sure that the length of a character field is
+    #             exactly 4 characters.
+    @api.constrains('emp_id')
+    def len_emp_id(self):
+        for emp in self:
+            if not emp.emp_id:
+                raise ValidationError('Employee ID missing.')
+            elif len(emp.emp_id) > 4:
+                raise ValidationError('Employee ID could not be more than 4 Character!')
 
     @api.depends('salary_ids')
     def _calc_total_sal(self):
@@ -113,15 +134,17 @@ class Team(models.Model):
                                   ('team.department', 'Department')], 'Reference')
     currency_id = fields.Many2one('res.currency', 'Currency')
     last_sal = fields.Monetary(currency_field='currency_id', string='Last Salary')
+    incentive = fields.Float('Incentive')
 
-    # TODO 11.Print the current language of the system.
-    #      12.Print the name of the current company.
-    #      13.Print the name of the Current User
-    #      14.Get the context from Environment
-    #      15.Get the recordset of the form view which you have created for your model.
-    #      16.Get the value of all predefined fields for a recordset containing one or more records.
+    # TODO 11. Print the current language of the system.
+    #      12. Print the name of the current company.
+    #      13. Print the name of the Current User
+    #      14. Get the context from Environment
+    #      15. Get the recordset of the form view which you have created for your model.
+    #      `16. Get the value of all predefined fields for a recordset containing one or more records.`
     #      17. Filter the existing recordset with a condition. The condition should contain a field and a value.
-    #      `18. Didn't understand`
+    #      `18. Filter an existing record on a field such that if only the records which do not have
+    #          a value in the field should be displayed.`
     #      19. From a recordset get two fields character and integer such that the result would contain a
     #          single value which will be a concatenation of two fields mentioned above. For e.g. If you’re
     #          taking name and age it should be ‘Amar-25’.
@@ -371,6 +394,86 @@ class Team(models.Model):
         emp_name_exp = self.read(['name', 'comp_name', 'exp'])  # load=''
         print(emp_name_exp)
 
+    # TODO: 4.4. Override default_get method to add default fields when the record is created.
+    #       4.15. Create a Sequence for an object and fetch the sequence as default value to a field.
+    # @api.model
+    # def default_get(self, fields):
+    #     seq_obj = self.env['ir.sequence']
+    #     res = super(Team, self).default_get(fields)
+    #     res['emp_code'] = seq_obj.next_by_code('team.team')
+    #     res.update({'email': 'abc@gmail.com'})
+    #     return res
+
+    # # TODO: 4.16. Create a sequence and assign it on creation of the record.
+    # @api.model_create_multi
+    # def create(self, vals_lst):
+    #     seq_obj = self.env['ir.sequence']
+    #     for emp_vals in vals_lst:
+    #         emp_vals['emp_code'] = seq_obj.next_by_code('team.team')
+    #     return super(Team, self).create(vals_lst)
+
+    # TODO:4.17. Create a sequence and assign it’s value on a button click.
+    def add_seq(self):
+        print("self=================:", self)
+        seq_obj = self.env['ir.sequence']
+        self.write({'emp_code': seq_obj.next_by_code('team.team')})
+        # for i in self:
+        #     i.write({'emp_code': seq_obj.next_by_code('team.team')})
+
+    # TODO: 4.7. Add an onchange method for a field where it will update values of two other
+    #            fields.
+    @api.onchange('gender')
+    def onchnage_gender(self):
+        for emp in self:
+            if emp.gender == 'male':
+                emp.phone = '+911234567890'
+                emp.email = 'abc@gmail.com'
+                # return res
+            elif emp.gender == 'female':
+                emp.phone = '+919874563210'
+                emp.email = 'xyz@gmail.com'
+                # TODO: In hrms_14 If we already select OPR and than change to female then id is there??
+
+    # TODO 4.8. Add an onchange method for multiple fields to update another field’s value.
+    #           NOTE: Here the same method should be called when you change any of the fields.
+    #      4.10. If there is no value passed raise a warning in an onchnage method.
+    @api.onchange('gender', 'marital_status')
+    def incentive_amt(self):
+        for emp in self:
+            res = {}
+            if emp.gender == 'male' and emp.marital_status == 'single':
+                emp.incentive = 800.0
+            elif emp.gender == 'female' and emp.marital_status == 'single':
+                emp.incentive = 900.0
+            elif emp.gender == 'male' or emp.gender == 'female' and emp.marital_status == 'married':
+                emp.incentive = 1200.0
+            # if not emp.marital_status:
+            #     res['warning'] = {
+            #         'title': 'Marital Status',
+            #         'message': 'Marital Status can not be empty.'
+            #     }
+            return res
+
+    # TODO: 4.9. Add an onchange method which will add a domain on a many2one and
+    #            many2many field. Not completed
+    @api.onchange('department_id')
+    def dept_skill(self):
+        res = {'skill_ids': []}
+        print('res===============>:', res)
+        if self.department_id.id == 2:
+            res['domain'] = {'skill_ids': [('name', 'not in', ['Six Sigma'])]}
+        else:
+            res['domain'] = {'skill_ids': []}
+        return res
+        # print("self==========>:", self)
+        # for emp in self:
+        #     print("emp********: ", emp.department_id)  # team.department(2,) this gives me recordset
+        #     print("emp.id********: ", emp.department_id.id)  # 2, this gives me id
+        #     if emp.department_id.id == 2:
+        #         res['domain'] = {'skill_ids': [('name', 'not in', ['Six Sigma'])]}
+        #         print("res:", res)
+        #     return res
+
 
 class Department(models.Model):
     _name = 'team.department'
@@ -378,8 +481,76 @@ class Department(models.Model):
 
     _rec_name = 'dep_name'
 
+    # TODO: 4.11.Add an SQL constraint to add a unique constraint on a single field.
+    #       4.12. Add an SQL constraint to add a unique constraint on a combination of two fields.
+    _sql_constraints = [
+        # ('unique_dept_code', 'unique(dep_code)', 'Each department should have unique code'),
+        ('unique_dept_name_code', 'unique(dep_name, dep_code)', 'combination of department name and code must be unique')
+    ]
+
     dep_name = fields.Char('Department Name')
     dep_code = fields.Char('Code', size=4)
+
+    # TODO: 4.1. Override name_get method and display two fields rather than just name in the
+    #            many2one field.
+    def name_get(self):
+        """
+        To get department name combining with their code.
+        :return: List of tuple containing id, name => [(id, name)]
+        """
+        dept_list = []
+        for department in self:
+            if department.dep_code:
+                dept_list.append((department.id, '[' + department.dep_code + '] ' + department.dep_name))
+        return dept_list
+
+    # TODO: 4.2. Override name_search method to search with both the fields which are displayed
+    #            in many2one field.
+    @api.model
+    def name_search(self, name='', args=None, operator='ilike', limit=100):
+        args += ['|', ('dep_name', operator, name), ('dep_code', operator, name)]
+        return self.search(args).name_get()
+
+    # TODO: 4.3. Override name_create method to add additional fields for creating records.
+    @api.model
+    def name_create(self, name):
+        if name:
+            code = name[:3].upper()  # TODO: Put logic like for Certi Main Tech we get CMT
+            dept_vals = {'dep_name': name, 'dep_code': code}
+            return self.create([dept_vals]).name_get()[0]
+
+    # TODO: 4.5. Override fields_view_get method to change the attributes of specific field in a
+    #            specific view. For e.g. Change the sortable attribute for a field to False for tree
+    #            view. ONly for bydef = Flase
+    # TODO 4.6. Override fields_view_get method to change the attribute of a field in all the views.
+    @api.model
+    def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+        res = super(Department, self).fields_view_get(view_id=view_id, view_type=view_type,
+                                                      toolbar=toolbar, submenu=submenu)
+        # print('res==========>', res)
+        print("View: ", view_type)
+        # print('arch: ', res['arch'])
+        print('fields: ', res['fields'])
+        print('sortable:', res['fields']['dep_name']['sortable'])
+
+        if view_type == 'tree':
+            # res['fields']['dep_name']['store'] = False
+            # TODO: Why it's not working if I set store = False, for sortable and searchable.
+            #     Solution: This will not working because it only works for records store
+            #               which is by default False, not for default store = True.
+            res['fields']['dep_name']['sortable'] = False
+            print('=' * 30)
+            print('View Type: ', view_type)
+            print('For tree view sortable:', res['fields']['dep_name']['sortable'])
+            print('=' * 30)
+
+        # print('Update Fields: ', res['fields'])
+        # print('For tree view sortable:', res['fields']['dep_name']['sortable'])
+
+        if res['fields'].get('dep_name', False):
+            res['fields']['dep_name']['required'] = True
+        print('Updated fields: ', res['fields'])
+        return res
 
 
 class Salary(models.Model):
