@@ -67,9 +67,9 @@ class Team(models.Model):
     email = fields.Char('Email address')
 
     salary_ids = fields.One2many('team.salary', 'employee_id', 'Salaries')
-    total_gross_sal = fields.Float('Total Gross', compute='_calc_total_sal')
+    total_gross_sal = fields.Float('Total Gross', compute='_calc_total_sal', store=True)
     # compute fields are not stored in database, with this attr `store=True` you can stored
-    total_net_sal = fields.Float('Total Net', compute='_calc_total_sal')
+    total_net_sal = fields.Float('Total Net', compute='_calc_total_sal', store=True)
     percent = fields.Float('Percentage', compute='_calc_total_sal')
 
     # TODO: 4.14. Add an object constraint to make sure that the length of a character field is
@@ -120,6 +120,10 @@ class Team(models.Model):
     sequence = fields.Integer('Sequence')
     parent_id = fields.Many2one('team.team', 'Manager')
     parent_path = fields.Char('Parent Path', index=True)
+    colors = fields.Integer('Colors')
+    join_date = fields.Date('Joined Date')
+    training_start = fields.Datetime('Training Start Date')
+    training_end = fields.Datetime('Training End Date')
 
     # Emergency contact info
     full_name = fields.Char('Full Name', required=True)

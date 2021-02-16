@@ -14,16 +14,27 @@
                         <button name="add_team" string="New Employee" type="object"/>
                         <button name="add_seq" string="Add Sequence" type="object"/>
                         <field name="state"
-                               widget="statusbar"
-                               clickable="1" statusbar_visible="applied,joined,left"/>
+                               widget="statusbar" clickable="1"/>
+<!--                        <field name="state"-->
+<!--                               widget="statusbar"-->
+<!--                               clickable="1" statusbar_visible="applied,joined,left"/>-->
                     </header>
                     <group name="grp_pr_details" string="Personal Details">
                         <field name="photo" widget="image" class="oe_avatar" nolabel="1" help="Upload your Photo"/>
                     </group>
                     <group colspan="4" col="4">
                         <!--                        <field name="sequence"/>-->
-                        <field name="name" placeholder="Please enter your name e.g. Will"/>
-                        <field name="ls_name" placeholder="Last Name or Surname w.g. Smith"/>
+                        <!--  TODO: 5.27. Add an inline stylesheet on the form.  -->
+                        <!--  TODO: Doubt 5.28. Use existing styles of odoo on your form. Where to find
+                                                existing class we have.  -->
+                        <field name="name"
+                               placeholder="Please enter your name e.g. Will"
+                               style="color: hsl(89, 43%, 51%)"/>  <!--  inline stylesheet  -->
+
+                        <!-- TODO: 5.30. Use created stylesheet on your form.  -->
+                        <field name="ls_name"
+                               placeholder="Last Name or Surname w.g. Smith"
+                               class="o_wrksp_styles"/>
                         <field name="gender" widget="radio"/>
                         <field name="marital_status"/>
                         <field name="res_address" placeholder="Type Residential Address"/>
@@ -41,13 +52,21 @@
                         <!-- TODO: 7. Add a character field and an integer field. When there is a value in the character
                                       field the integer field should be mandatory else readonly. -->
                         <field name="comp_name"/>
+                        <field name="join_date"/>
                         <field name="exp" placeholder="Experience in Years"
                                attrs="{'required': [('comp_name', '!=', False)],
                                        'readonly': [('comp_name', '=', False)]}"/>
                         <field name="title"/>
                         <field name="emp_id"/>
                         <field name="emp_code"/>
-                        <field name="department_id"/>
+                        <field name="training_start"/>
+                        <field name="training_end"/>
+                        <!--  TODO:Doubt 5.25. Create internal views form and tree for a Many2one field.  -->
+                        <field name="department_id">
+                            <form>
+                                <field name="dep_code"/>
+                            </form>
+                        </field>
                         <!--TODO: 1. In the many2one field only the records which are having ‘it’
                                      should be allowed to select-->
 <!--                        <field name="department_id"-->
@@ -94,7 +113,25 @@
                     </group>
                     <notebook>
                         <page name="pg_salary" string="Salary">
-                            <field name="salary_ids"/>
+                            <!--  TODO:5.24. Create internal views form and tree for a One2many field.  -->
+                            <field name="salary_ids">
+                                <form>
+                                    <group>
+                                        <field name="month"/>
+                                        <field name="basic"/>
+                                        <field name="allowance"/>
+                                        <field name="deduction"/>
+                                        <field name="gross_sal"/>
+                                        <field name="net_sal"/>
+                                    </group>
+                                </form>
+                                <tree>
+                                    <field name="month"/>
+                                    <field name="basic"/>
+                                    <field name="gross_sal"/>
+                                    <field name="net_sal"/>
+                                </tree>
+                            </field>
                             <button name="add_sal" string="Add Salary" type="object"/>
                             <button name="del_sal" string="Delete Salary" type="object"/>
                             <button name="del_all_sal" string="Delete All Salary" type="object"/>
@@ -132,18 +169,31 @@
         <field name="name">tree.view.team</field>
         <field name="model">team.team</field>
         <field name="arch" type="xml">
-            <tree>
+            <!-- TODO: 5.4. Add a tree view and set a default order on a date field.
+                       5.5. Add 5 different colors on the tree view. Depending on state put 4 colors.
+                            5th Color would be red and this would be only for the records which are
+                          **archived or deactivated.
+                       5.6. Create a tree view and add few fields which can be hidden or shown dynamically.
+                            Add at least 4 fields which are hidden and 4 fields which are displayed but can be
+                            hidden.-->
+            <tree default_order="birthdate"
+                  decoration-success="state=='joined'"
+                  decoration-info="state=='applied' or state=='interviewed'"
+                  decoration-muted="state=='left'"
+                  decoration-primary="state=='selected'"
+                  decoration-danger="active==False">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
-                <field name="ls_name"/>
-                <field name="active" widget="boolean_toggle"/>
+                <field name="ls_name" optional="show"/>
+                <field name="active" widget="boolean_toggle" optional="show"/>
                 <field name="birthdate"/>
                 <field name="gender"/>
-                <field name="high_edu"/>
+                <field name="high_edu" optional="show"/>
                 <field name="phone" widget="phone"/>
-                <field name="total_gross_sal"/>
-                <field name="total_net_sal"/>
-                <field name="percent" widget="progressbar"/>
+                <field name="total_gross_sal" optional="hide"/>
+                <field name="total_net_sal" optional="show"/>
+                <field name="percent" widget="progressbar" optional="hide"/>
+                <field name="state" optional="hide"/>
                 <!--                <field name="percent" widget="percentpie"/>-->
 <!--                <field name="dep_name"/>-->
             </tree>
@@ -181,7 +231,194 @@
                         context="{'group_by' : 'department_id'}"/>
                 <filter name="grp_by_state" string="State"
                         context="{'group_by': 'state'}"/>
+
+                <!-- TODO 5.1. Add a searchpanel on the search view to filter the records. -->
+                <searchpanel>
+                    <field name="department_id"/>
+                </searchpanel>
             </search>
+        </field>
+    </record>
+
+    <!-- Calender view of Team Join Date-->
+    <!-- TODO 5.7. Create a calendar view where the record will be displayed only on a single day for
+                   month mode on calendar view. -->
+<!--    <record id="calendar_view_team" model="ir.ui.view">-->
+<!--        <field name="name">calendar.view.team</field>-->
+<!--        <field name="model">team.team</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <calendar date_start="join_date" color="name">-->
+<!--                <field name="name"/>-->
+<!--            </calendar>-->
+<!--        </field>-->
+<!--    </record>-->
+
+    <!-- Calender view of Team Training -->
+    <!-- TODO 5.8. Create a calendar view where the record can be displayed on multiple days for
+                   month mode on calendar view.
+              5.9. Create a calendar view where the record will be displayed for multiple hours on a
+                   day mode of calendar view.-->
+    <record id="calendar_view_team_training" model="ir.ui.view">
+        <field name="name">calendar.view.team.training</field>
+        <field name="model">team.team</field>
+        <field name="arch" type="xml">
+            <calendar date_start="training_start" date_stop="training_end" color="name">
+                <field name="name"/>
+                <field name="department_id"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Graph View of Team  -->
+    <record id="graph_view_team" model="ir.ui.view">
+        <field name="name">graph.view.team</field>
+        <field name="model">team.team</field>
+        <field name="arch" type="xml">
+            <!-- TODO: 5.10. Create a graph view which will be a bar chart with one measure. -->
+<!--            <graph>-->
+<!--                <field name="name" type="row"/>-->
+<!--                <field name="department_id" type="col"/>-->
+<!--                <field name="total_net_sal" type="measure"/>-->
+<!--            </graph>-->
+            <!-- TODO: 5.11. Create a graph view which will be a bar chart with multiple cols and not stacked.-->
+<!--            <graph stacked="0">-->
+<!--                <field name="name" type="row"/>-->
+<!--                <field name="gender" type="col"/>-->
+<!--                <field name="department_id" type="col"/>-->
+<!--                <field name="total_net_sal" type="measure"/>-->
+<!--            </graph>-->
+            <!-- TODO: 5.12. Create a graph view which will be a bar chart with multiple cols and stacked.-->
+<!--            <graph stacked="1">-->
+<!--                <field name="name" type="row"/>-->
+<!--                <field name="gender" type="col"/>-->
+<!--                <field name="department_id" type="col"/>-->
+<!--                <field name="comp_name" type="col"/>-->
+<!--                <field name="total_net_sal" type="measure"/>-->
+<!--            </graph>-->
+            <!-- TODO: 5.13. Create a graph view which will be a line chart with multiple cols.-->
+            <graph type="line">
+                <field name="name" type="row"/>
+                <field name="gender" type="col"/>
+                <field name="department_id" type="col"/>
+                <field name="comp_name" type="col"/>
+                <field name="total_net_sal" type="measure"/>
+            </graph>
+            <!-- TODO: 5.14. Create a graph view which will be a pie chart.-->
+<!--            <graph type="pie">-->
+<!--                <field name="name" type="row"/>-->
+<!--                <field name="gender" type="col"/>-->
+<!--                <field name="department_id" type="col"/>-->
+<!--                <field name="comp_name" type="col"/>-->
+<!--                <field name="total_net_sal" type="measure"/>-->
+<!--            </graph>-->
+        </field>
+    </record>
+
+    <!--  Pivot View of Team  -->
+    <record id="pivot_view_team" model="ir.ui.view">
+        <field name="name">pivot.view.team</field>
+        <field name="model">team.team</field>
+        <field name="arch" type="xml">
+            <!-- TODO: 5.15. Create a pivot view with single row and single col but multiple measures.  -->
+<!--            <pivot>-->
+<!--                <field name="name" type="col"/>-->
+<!--                <field name="department_id" type="row"/>-->
+<!--                <field name="total_net_sal" type="measure"/>-->
+<!--                <field name="total_gross_sal" type="measure"/>-->
+<!--            </pivot>-->
+            <!-- TODO: 5.16. Create a pivot view with multiple rows and multiple cols and also multiple
+                             measures.-->
+<!--            <pivot>-->
+<!--                <field name="name" type="row"/>-->
+<!--                <field name="department_id" type="row"/>-->
+<!--                <field name="gender" type="col"/>-->
+<!--                <field name="marital_status" type="col"/>-->
+<!--                <field name="total_net_sal" type="measure"/>-->
+<!--                <field name="total_gross_sal" type="measure"/>-->
+<!--            </pivot>-->
+            <!-- TODO: 5.17. Create a pivot view where there is a row or col with a date field which displays
+                    the quarter of the date.-->
+<!--            <pivot>-->
+<!--                <field name="name" type="col"/>-->
+<!--                <field name="department_id" type="row"/>-->
+<!--                <field name="join_date" type="col" interval="quarter"/>-->
+<!--                <field name="total_net_sal" type="measure"/>-->
+<!--                <field name="total_gross_sal" type="measure"/>-->
+<!--            </pivot>-->
+            <!-- TODO: 5.18. Create a pivot view where there is a row or col with a date field which displays
+                    the month of the date along with quarter.-->
+            <pivot>
+                <field name="name" type="col"/>
+                <field name="department_id" type="row"/>
+                <field name="join_date" type="col" interval="quarter"/>
+                <field name="join_date" type="col" interval="month"/>
+                <field name="total_net_sal" type="measure"/>
+                <field name="total_gross_sal" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!--  Kanban View of Team  -->
+    <record id="kanban_view_team" model="ir.ui.view">
+        <field name="name">kanban.view.team</field>
+        <field name="model">team.team</field>
+        <field name="arch" type="xml">
+            <!--  TODO: 5.19. Create a kanban view to display only fields of a record.
+                        5.20. Add an image on the kanban view.
+                        5.21. Add a color index field on a model and display the color on the kanban view. Add
+                              a color picker on the kanban view to choose the color.
+                        5.22. Add a dropdown on the kanban view. This should open the current record in edit
+                              mode.
+                        Doubts 5.23. Add a dropdown on the kanban view it will open the records of the one2many
+                              field.-->
+            <kanban class="o_kanban_mobile">
+                <field name="photo"/>
+                <field name="id"/>
+                <field name="colors"/>
+                <field name="salary_ids"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.colors.raw_value)}">
+                            <div class="o_kanban_image">
+                                <img alt="Image"
+                                     class="oe_avatar"
+                                     t-att-src="kanban_image('team.team', 'photo', record.id.raw_value)"/>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <strong>
+                                        <field name="name"/>
+                                    </strong>
+                                    <br/>
+                                    <field name="department_id"/>
+                                    <br/>
+                                    <field name="skill_ids"/>
+                                </div>
+                            </div>
+                            <div class="o_dropdown_kanban dropdown">
+                                <a role="button" class="dropdown-toggle o-no-caret btn"
+                                   data-toggle="dropdown"
+                                   data-display="static"
+                                   href="#"
+                                   area-lable="dropdown menu"
+                                   title="Edit">
+                                    <span class="fa fa-ellipsis-v"/>
+                                </a>
+                                <div class="dropdown-menu" role="menu">
+                                    <div>
+                                        <ul class="oe_kanban_colorpicker" data-field="colors"/>
+                                        <div role="separator" class="dropdown-divider"/>
+                                        <div role="menuitem">
+                                            <a class="dropdown-item o_kanban_toggle_fold" type="edit">Edit</a>
+                                        </div>
+                                        <div role="separator" class="dropdown-divider"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
         </field>
     </record>
 
@@ -189,11 +426,11 @@
     <record id="action_team" model="ir.actions.act_window">
         <field name="name">Employee</field>  <!-- This name is shown in menus so give it proper name -->
         <field name="res_model">team.team</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree,form,calendar,graph,pivot,kanban</field>
     </record>
 
-    <!--TODO 4. Create an action and add a domain on this action to display specific records.-->
     <!-- Action of Team Graduates Technician-->
+    <!--TODO 4. Create an action and add a domain on this action to display specific records.-->
     <record id="action_team_tech" model="ir.actions.act_window">
         <field name="name">Graduates</field>  <!-- This name is shown in menus so give it proper name -->
         <field name="res_model">team.team</field>
@@ -207,6 +444,172 @@
                                 'search_default_grp_by_state':1}</field>
     </record>
 
+
+    <!--  TODO: 5.26. Create multiple views for a model of all types (tree,form,calendar,graph). Bind
+                      these views to an action using context.  -->
+
+    <!--****************************Form view of Team for Technician************************* -->
+    <record id="form_view_team_tech" model="ir.ui.view">
+        <field name="name">form.view.team.tech</field>
+        <field name="model">team.team</field>
+        <field name="arch" type="xml">
+            <form readonly="1">
+                <sheet>
+                    <header>
+                        <button name="print_detail" string="Details" type="object"/>
+                        <button name="add_team" string="New Employee" type="object"/>
+                        <button name="add_seq" string="Add Sequence" type="object"/>
+                        <field name="state"
+                               widget="statusbar" clickable="1"/>
+                    </header>
+                    <group name="grp_pr_details" string="Personal Details">
+                        <field name="photo" widget="image" class="oe_avatar" nolabel="1" help="Upload your Photo"/>
+                    </group>
+                    <group colspan="4" col="4">
+                        <field name="name" placeholder="Please enter your name e.g. Will"/>
+                        <field name="ls_name" placeholder="Last Name or Surname w.g. Smith"/>
+                        <field name="marital_status"/>
+                        <field name="res_address" placeholder="Type Residential Address"/>
+                        <field name="pin_code"/>
+                        <field name="birthdate" help="Give your birthdate"/>  <!--help which we can say as tooltip-->
+                        <field name="age"/>
+                        <field name="blood" widget="selection"/>
+                        <field name="high_edu"/>
+                    </group>
+
+                    <!--******************** Job Info ******************************-->
+                    <group name="grp_job_info" string="Job Info" colspan="4" col="4">
+                        <field name="comp_name"/>
+                        <field name="join_date"/>
+                        <field name="exp" placeholder="Experience in Years"
+                               attrs="{'required': [('comp_name', '!=', False)],
+                                       'readonly': [('comp_name', '=', False)]}"/>
+                        <field name="title"/>
+                        <field name="emp_id"/>
+                        <field name="emp_code"/>
+                        <field name="training_start"/>
+                        <field name="training_end"/>
+                        <field name="department_id"/>
+                        <field name="work_loc"/>
+                        <field name="email" widget="email"/>
+                        <field name="skills" widget="priority"/>
+                        <field name="phone" widget="phone"/>
+                        <field name="skill_ids"
+                               widget="many2many_tags"/>
+                        <field name="reference"/>
+                        <field name="parent_id"
+                               domain="['&amp;', ('id', '=', [1, 4, 13]), ('id', '!=', active_id)]"
+                               widget="selection" />
+                    </group>
+                    <group name="grp_attachment" string="Attachments" colspan="4" col="4">
+                        <field name="resume" filename="file_name"/>
+                        <field name="file_name" invisible="1"/>
+                        <field name="add_cover_letter" widget="boolean_toggle"/>
+                    </group>
+                    <notebook>
+                        <page name="pg_salary" string="Salary">
+                            <field name="salary_ids">
+                                <form>
+                                    <group>
+                                        <field name="month"/>
+                                        <field name="basic"/>
+                                        <field name="allowance"/>
+                                        <field name="deduction"/>
+                                        <field name="gross_sal"/>
+                                        <field name="net_sal"/>
+                                    </group>
+                                </form>
+                                <tree>
+                                    <field name="month"/>
+                                    <field name="basic"/>
+                                    <field name="gross_sal"/>
+                                    <field name="net_sal"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="pg_temp" string="Template">
+                            <field name="template" help="You can modify your text here like Bold, font color etc.."/>
+                        </page>
+                        <page name="pg_cover" string="Cover Letter"
+                              attrs="{'invisible': [('add_cover_letter', '=', False)]}">
+                            <field name="cover_let" placeholder="Write Cover Letter"/>
+                        </page>
+                    </notebook>
+                    <group name="grp_emrgnc_info" string="Emergency Contact Info">
+                        <field name="full_name"/>
+                        <field name="relationship" placeholder='Relationship with contact person e.g. Mother'/>
+                        <field name="contact" widget="phone"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--  Tree view of Team Technician  -->
+    <record id="tree_view_team_tech" model="ir.ui.view">
+        <field name="name">tree.view.team.tech</field>
+        <field name="model">team.team</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="ls_name" optional="show"/>
+                <field name="birthdate"/>
+                <field name="phone" widget="phone"/>
+                <field name="total_gross_sal" optional="hide"/>
+                <field name="total_net_sal" optional="show"/>
+                <field name="percent" widget="progressbar" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--  Calendar for Technician Team -->
+    <record id="view_tech_team_calendar" model="ir.ui.view">
+        <field name="name">view.tech.team.calendar</field>
+        <field name="model">team.team</field>
+        <field name="arch" type="xml">
+            <calendar date_start="training_start" date_stop="training_end" color="name">
+                <field name="name"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Graph view for Technician-->
+    <record id="view_tech_team_graph" model="ir.ui.view">
+        <field name="name">view.tech.team.graph</field>
+        <field name="model">team.team</field>
+        <field name="arch" type="xml">
+            <graph>
+                <field name="name" type="row"/>
+                <field name="gender" type="col"/>
+                <field name="total_net_sal" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!--  Action for CST Technician -->
+    <record id="action_team_cst" model="ir.actions.act_window">
+        <field name="name">CST</field>
+        <field name="res_model">team.team</field>
+        <field name="view_mode">tree,form,calendar,graph</field>
+        <field name="domain">[('department_id', '=', 3)]</field>
+        <field name="context">{'form_view_ref': 'workshop_aftersales.form_view_team_tech',
+                                'tree_view_ref': 'workshop_aftersales.tree_view_team_tech',
+                                'calender_view_ref': 'workshop_aftersales.view_tech_team_calendar',
+                                'graph_view_ref': 'workshop_aftersales.view_tech_team_graph'}</field>
+    </record>
+
+    <!--  Action for CMT Technician -->
+    <record id="action_team_cmt" model="ir.actions.act_window">
+        <field name="name">CMT</field>
+        <field name="res_model">team.team</field>
+        <field name="view_mode">tree,form,calendar,graph</field>
+        <field name="domain">[('department_id', '=', 2)]</field>
+        <field name="context">{'form_view_ref': 'workshop_aftersales.form_view_team_tech',
+                                'tree_view_ref': 'workshop_aftersales.tree_view_team_tech',
+                                'calender_view_ref': 'workshop_aftersales.view_tech_team_calendar',
+                                'graph_view_ref': 'workshop_aftersales.view_tech_team_graph'}</field>
+    </record>
+
     <!-- Menu of Workshop After sales Team application-->
     <menuitem id="menu_aftr_sal" name="After sales"/>
     <menuitem id="menu_aftr_sal_child" name="Team" parent="menu_aftr_sal"/>
@@ -214,7 +617,8 @@
     <!-- Menu of Team -->
     <menuitem id="menu_team" action="action_team" parent="menu_aftr_sal_child"/>
     <menuitem id="menu_technician" action="action_team_tech" parent="menu_aftr_sal_child"/>
-
+    <menuitem id="menu_cst_tech" action="action_team_cst" parent="menu_aftr_sal_child"/>
+    <menuitem id="menu_cmt_tech" action="action_team_cmt" parent="menu_aftr_sal_child"/>
 
     <!--*******************Form View for Department****************************-->
     <record id="form_view_dept" model="ir.ui.view">
@@ -235,6 +639,8 @@
         <field name="name">tree.view.dept</field>
         <field name="model">team.department</field>
         <field name="arch" type="xml">
+            <!-- TODO: 5.2. Create an editable tree view for a model. -->
+<!--            <tree editable="top">-->
             <tree>
                 <field name="dep_name"/>
                 <field name="dep_code"/>
@@ -307,7 +713,8 @@
         <field name="name">tree.view.skill</field>
         <field name="model">team.skill</field>
         <field name="arch" type="xml">
-            <tree>
+            <!-- TODO: 5.3. Make a tree view and make sure that the records can not be created or deleted. -->
+            <tree create="false" delete="false">
                 <field name="name"/>
             </tree>
         </field>
@@ -324,3 +731,4 @@
     <menuitem id="menu_skill" action="action_skill" parent="menu_aftr_sal_child"/>
 
 </odoo>
+

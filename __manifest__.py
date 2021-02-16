@@ -9,6 +9,7 @@
         'security/wrks_security.xml',  # path: folder_name/file_name, keep security on the top
         'security/ir.model.access.csv',
         'data/team_sequence.xml',
+        'views/wrksp_templates.xml',
         # sequence is important here because first at hrms_security groups are created and than access is given ir.model
         'views/wrks_view.xml',
     ],
