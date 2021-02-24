@@ -4,6 +4,11 @@ from odoo.exceptions import ValidationError
 
 
 class Team(models.Model):
+
+    # TODO 6.12. Add the Chatter functionality in your existing module. Add features like
+    #            messaging, log, activity, followers and attachments.
+
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _name = 'team.team'
     _description = 'Team'
     _auto = True  # this by default true, here I have mentioned for understanding only,
@@ -603,9 +608,9 @@ class Salary(models.Model):
     _description = 'Salary'
 
     month = fields.Selection([(str(ele), str(ele)) for ele in range(1, 13)], 'Month')
-    basic = fields.Float('Basic')
+    basic = fields.Float('Basic', tracking=True)
     allowance = fields.Float('Allowance')
-    deduction = fields.Float('Deduction')
+    deduction = fields.Float('Deduction', tracking=True)
     employee_id = fields.Many2one('team.team', 'Employee')
     # employee_id = fields.Many2one('team.team', 'Employee', ondelete='cascade')
     gross_sal = fields.Float('Gross', compute='_calc_net_gross')

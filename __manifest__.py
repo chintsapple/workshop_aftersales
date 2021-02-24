@@ -4,7 +4,8 @@
     'version': '1.0',
     'author': 'k&K motors Pvt. Ltd.',
     'website': 'www.knk.com',
-    'depends': ['base'],  # for dependency `base` must me there rest if your using some other modules than mention here
+    'depends': ['base', 'mail'],
+    # for dependency `base` must me there rest if your using some other modules than mention here
     'data': [
         'security/wrks_security.xml',  # path: folder_name/file_name, keep security on the top
         'security/ir.model.access.csv',

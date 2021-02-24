@@ -24,10 +24,10 @@
                         <!--                               widget="statusbar"-->
                         <!--                               clickable="1" statusbar_visible="applied,joined,left"/>-->
                     </header>
-                    <group name="grp_pr_details" string="Personal Details">
+                    <group string="Personal Details">
                         <field name="photo" widget="image" class="oe_avatar" nolabel="1" help="Upload your Photo"/>
                     </group>
-                    <group colspan="4" col="4">
+                    <group name="grp_pr_details" colspan="4" col="4">
                         <!--                        <field name="sequence"/>-->
                         <!--  TODO: 5.27. Add an inline stylesheet on the form.  -->
                         <!--  TODO: Doubt 5.28. Use existing styles of odoo on your form. Where to find
@@ -168,8 +168,19 @@
                     <button name="search_iti" string="ITI Employees" type="object"/>
                     <button name="read_rec" string="Name and experience" type="object"/>
                 </footer>
+
+                <xpath expr="/sheet" position="after">
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                        <!--  TODO: Doubt => Position is fixed no matter in which order we put fields??  -->
+                    </div>
+                </xpath>
             </form>
         </field>
+
+
     </record>
 
     <!-- Tree view of Team-->
