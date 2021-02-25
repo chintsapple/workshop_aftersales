@@ -69,7 +69,10 @@ class Team(models.Model):
                                  ('anand', 'Anand'),
                                  ('surat', 'Surat')], 'Work Location')
     phone = fields.Char('Phone')
-    email = fields.Char('Email address')
+
+    # TODO 6.13. Make a tracking of the records such that whenever a field is modified you will
+    #            have the track of it in your chatter.
+    email = fields.Char('Email address', tracking=True)
 
     salary_ids = fields.One2many('team.salary', 'employee_id', 'Salaries')
     total_gross_sal = fields.Float('Total Gross', compute='_calc_total_sal', store=True)
