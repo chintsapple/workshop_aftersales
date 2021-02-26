@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <!--  Groups of Admin for Team  -->
+    <record id="grp_adm" model="res.groups">
+        <field name="name">Team/Admin</field>
+        <field name="implied_ids" eval="[(6,0,[ref('workshop_aftersales.grp_usr')])]"/>
+    </record>
+</odoo>

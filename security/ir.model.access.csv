@@ -1,9 +1,9 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_team_manager,access.team.manager,model_team_team,grp_mngr,1,1,1,1
-access_team_user,access.team.manager,model_team_team,grp_usr,1,1,1,0
-access_department_manager,access.department.manager,model_team_department,grp_mngr,1,1,1,1
-access_department_user,access.department.manager,model_team_department,grp_usr,1,1,1,0
-access_salary_manager,access.salary.manager,model_team_salary,grp_mngr,1,1,1,1
-access_salary_user,access.salary.manager,model_team_salary,grp_usr,1,1,1,0
-access_skill_manager,access.skill.manager,model_team_skill,grp_mngr,1,1,1,1
-access_skill_user,access.skill.manager,model_team_skill,grp_usr,1,1,1,0
+access_teams_manager,access.teams.manager,model_team_teams,workshop_aftersales.grp_mngr,1,1,1,1
+access_teams_user,access.teams.manager,model_team_teams,workshop_aftersales.grp_usr,1,1,1,1
+workshop_aftersales.access_team_user,access.team.manager,workshop_aftersales.model_team_team,workshop_aftersales.grp_usr,1,1,0,0
+access_team_admin,access.team.admin,workshop_aftersales.model_team_team,grp_adm,1,1,1,1
+access_car_manager,access.car.manager,model_car_model,workshop_aftersales.grp_mngr,1,1,0,0
+access_car_admin,access.car.admin,model_car_model,grp_adm,1,1,1,1
+access_car_variant_manager,access.my.car.variant.manager,model_car_variant,workshop_aftersales.grp_mngr,1,1,0,0
+access_car_variant_admin,access.my.car.variant.admin,model_car_variant,grp_adm,1,1,1,1

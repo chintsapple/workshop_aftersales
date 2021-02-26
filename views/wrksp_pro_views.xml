@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <!--  Form View Inheritance of Team  -->
+    <record id="form_view_team_pro" model="ir.ui.view">
+        <field name="name">form.view.team.pro</field>
+        <field name="model">team.team</field>
+        <field name="inherit_id" ref="workshop_aftersales.form_view_team"/>
+        <field name="arch" type="xml">
+
+            <!--  TODO: 6.2. Add these 5 fields in the form view and except the two fields add
+                             them before and after a field. Also replace an existing field with
+                             the third field. Add the relational field in an existing notebook
+                             in a new page. Add the notes field in the existing page.
+                        6.15. Add groups on an existing fields, buttons and page.  -->
+
+            <xpath expr="//field[@name='email']" position="before">
+                <field name="mobile"
+                       widget="phone"
+                       groups="workshop_aftersales.grp_usr"/>
+            </xpath>
+
+            <xpath expr="//button[@name='print_detail']" position="replace">
+                <button name="print_detail"
+                        string="Details"
+                        type="object"
+                        groups="workshop_aftersales.grp_usr"/>
+            </xpath> <!--  6.15  -->
+
+            <!--   TODO:6.17. Add a new group on an existing field where other group(s) are already existing.  -->
+            <xpath expr="//field[@name='training_end']" position="replace">
+                <field name="training_end"
+                       groups="workshop_aftersales.grp_usr,workshop_aftersales.grp_mngr"/>
+            </xpath>
+
+            <xpath expr="//field[@name='work_loc']">
+                <field name="work_loc"/>
+            </xpath>
+
+            <xpath expr="//notebook/page[@name='pg_salary']" position="after">
+                <page name="pg_wrk_loc"
+                      string="Workshop Location"
+                      groups="workshop_aftersales.grp_usr"> <!--  6.15  -->
+                    <field name="workshop_loc_ids">
+                        <form>
+                            <group>
+                                <field name="location_id"/>
+                                <field name="pin_code"/>
+                            </group>
+                        </form>
+                        <tree>
+                            <field name="location_id"/>
+                            <field name="pin_code"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+
+            <xpath expr="//notebook/page[@name='pg_temp']" position="inside">
+                <group name="grp_note" string="Notes">
+                    <field name="note"/>
+                </group>
+            </xpath>
+
+            <!--  TODO: 6.3. Change an attribute of an existing field by inheriting it in the view.  -->
+            <xpath expr="//field[@name='comp_name']" position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
+
+            <!-- TODO 6.8. Add a new state in the existing list of states. Add a new button in
+                           the existing view to change the state to this state. Make sure the
+                           remaining flow is also followed. -->
+            <xpath expr="//button[@name='emp_release']" position="after">
+                <button name="emp_promotion" string="Promoted" type="object" states="joined"/>
+            </xpath>
+        </field>
+    </record>
+
+<!--===============  Inherited views for new model Teams from Team  ===================-->
+
+    <!--  Form View Teams Inherits from Team  -->
+    <record id="form_view_teams" model="ir.ui.view">
+        <field name="name">form.view.teams</field>
+        <field name="model">team.teams</field>
+        <field name="inherit_id" ref="workshop_aftersales.form_view_team"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='high_edu']" position="after">
+                <field name="grade_10th"/>
+                <field name="garde_12th"/>
+                <field name="cgpa"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Tree view of Teams Inherits from Team -->
+    <record id="tree_view_teams" model="ir.ui.view">
+        <field name="name">tree.view.teams</field>
+        <field name="model">team.teams</field>
+        <field name="inherit_id" ref="workshop_aftersales.tree_view_team"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='high_edu']" position="after">
+                <!--  TODO 6.18. Provide access of your new model to an existing group
+                                 of different module.
+                           6.19. Modify access rights and provide delete access to a
+                                 group which was not having it for a model.-->
+                <field name="grade_10th" optional="hide" groups="workshop_aftersales.grp_mngr"/>
+                <field name="garde_12th" optional="hide"/>
+                <field name="cgpa" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <!--  Action of Teams Inherits from Team  -->
+    <record id="action_teams" model="ir.actions.act_window">
+        <field name="name">New Team</field>  <!-- This name is shown in menus so give it proper name -->
+        <field name="res_model">team.teams</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!--  TODO: 6.16. Remove groups from a menu.  -->
+    <!-- Menu of Workshop After sales Teams application-->
+    <menuitem id="menu_new_teams" name="New Team"
+              parent="workshop_aftersales.menu_aftr_sal"
+              groups="-workshop_aftersales.grp_usr,workshop_aftersales.grp_mngr"/>
+
+    <!-- Menu of Team -->
+    <menuitem id="menu_teams" action="action_teams"
+              parent="menu_new_teams"/>
+
+    <!--  TODO: 6.14. Modify the context of an existing action.
+                     `can we inherit action??`  -->
+    <!--  Action of Team Graduates Technician  -->
+    <record id="workshop_aftersales.action_team_tech" model="ir.actions.act_window">
+        <field name="domain">['|', ('high_edu', '=', 'graduate'), ('high_edu', '=', 'iti')]</field>
+        <field name="context">
+            {'default_high_edu': 'iti',
+            'default_gender': 'female'}
+        </field>
+    </record>
+
+</odoo>

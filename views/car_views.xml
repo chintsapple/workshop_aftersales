@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <!--  Form View for Car Template  -->
+    <record id="form_view_car_variant" model="ir.ui.view">
+        <field name="name">from.view.car.variant</field>
+        <field name="model">car.variant</field>
+        <field name="arch" type="xml">
+            <form>
+                <group name="grp_pro_var" colsapn="4" col="4">
+<!--                    <field name="car_id" string="Car"/>-->
+                    <field name="car_make"/>
+                    <field name="car_name"/>
+                    <field name="car_vari"/>
+                    <field name="fuel"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <!--  Tree View for Car Template  -->
+    <record id="tree_view_car_variant" model="ir.ui.view">
+        <field name="name">tree.view.car.variant</field>
+        <field name="model">car.variant</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="car_make"/>
+                <field name="car_name"/>
+                <field name="car_vari"/>
+                <field name="fuel"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--  Action for Product  -->
+    <record id="action_car_var" model="ir.actions.act_window">
+        <field name="name">Car Variants</field>
+        <field name="res_model">car.variant</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Menu for Product Variants  -->
+    <menuitem id="menu_car_var" action="action_car_var" parent="menu_new_teams"/>
+</odoo>

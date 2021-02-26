@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-
-<odoo>
-    <template id="wrksp_style" name="wrksp style" inherit_id="web.assets_backend">
-        <xpath expr="." position="inside">
-            <link rel="stylesheet" type="text/scss" href="/workshop_aftersales/static/src/scss/wrksp.scss"/>
-        </xpath>
-    </template>
-</odoo>
