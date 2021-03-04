@@ -7,3 +7,9 @@ access_salary_manager,access.salary.manager,model_team_salary,grp_mngr,1,1,1,1
 access_salary_user,access.salary.manager,model_team_salary,grp_usr,1,1,1,0
 access_skill_manager,access.skill.manager,model_team_skill,grp_mngr,1,1,1,1
 access_skill_user,access.skill.manager,model_team_skill,grp_usr,1,1,1,0
+access_update_field_manager,access.update_field.manager,model_update_field,grp_mngr,1,1,1,1
+access_update_field_user,access.update_field.manager,model_update_field,grp_usr,1,1,1,0
+access_update_salary_manager,access.update_salary.manager,model_update_salary,grp_mngr,1,1,1,1
+access_update_salary_user,access.update_salary.manager,model_update_salary,grp_usr,1,1,1,0
+access_update_exp_manager,access.update_exp.manager,model_update_exp,grp_mngr,1,1,1,1
+access_update_exp_user,access.update_exp.manager,model_update_exp,grp_usr,1,1,1,0

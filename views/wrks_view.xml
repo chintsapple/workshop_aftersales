@@ -2,6 +2,16 @@
 
 <odoo>
 
+    <!-- TODO: 7.2. Create another wizard which will be called from a button and this wizard will not
+                    have the field for the record only for the value. -->
+    <!-- Action for Wiz view So that it works as a button -->
+    <record id="action_update_field_btn" model="ir.actions.act_window">
+        <field name="name">Update Fields</field>
+        <field name="res_model">update.field</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
     <!--****************************Form view of Team************************* -->
     <record id="form_view_team" model="ir.ui.view">
         <field name="name">form.view.team</field>
@@ -10,6 +20,10 @@
             <form>
                 <sheet>
                     <header>
+                        <button name="%(action_update_field_btn)d"
+                                type="action" string="Field"
+                                class="btn btn-outline-dark"
+                                context="{'default_name_id': active_id}"/>
                         <button name="emp_interview" string="Interview" type="object" states="applied"/>
                         <button name="emp_select" string="Selected" type="object" states="interviewed"/>
                         <button name="emp_joined" string="Joined" type="object" states="selected"/>

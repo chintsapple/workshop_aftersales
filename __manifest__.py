@@ -11,8 +11,10 @@
         'security/ir.model.access.csv',
         'data/team_sequence.xml',
         'views/wrksp_templates.xml',
-        # sequence is important here because first at hrms_security groups are created and than access is given ir.model
         'views/wrks_view.xml',
+        'views/update_field_wizard.xml',
+        'views/update_salary_wizard_view.xml',
+        'views/update_exp_wiz_view.xml',
     ],
     'auto_install': False,
     'application': True  # True means it shows as a application not as a supporting module

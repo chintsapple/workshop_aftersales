@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+
+<!--    Form view for Wizard  for team  -->
+    <record id="form_view_wiz" model="ir.ui.view">
+        <field name="name">form.view.wiz</field>
+        <field name="model">update.field</field>
+        <field name="arch" type="xml">
+            <form string="Update Fields">
+                <group name="grp_wiz_fields">
+                    <field name="name_id" required="1"/>
+                    <field name="pin_code"/>
+                    <field name="per_address"/>
+                </group>
+                <footer>
+                    <button name="update_field" string="Update" type="object" class="btn btn-info"/>
+                    <button special="cancel" string="cancel" class="btn btn-primary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+<!--    Action for Wiz view-->
+    <record id="action_update_field" model="ir.actions.act_window">
+        <field name="name">Update Fields</field>
+        <field name="res_model">update.field</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+<!--    Menu to update field wizard  -->
+    <menuitem id="menu_update_field" action="action_update_field" parent="menu_aftr_sal_child"/>
+
+</odoo>

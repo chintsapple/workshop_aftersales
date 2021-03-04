@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+
+    <record id="form_view_wiz_sal" model="ir.ui.view">
+        <field name="name">form.view.wiz.sal</field>
+        <field name="model">update.salary</field>
+        <field name="arch" type="xml">
+            <form string="Update Salary">
+                <group name="grp_wiz_sal">
+                    <field name="employee_id" required="1"/>
+                    <field name="month" required="1"/>
+                    <field name="basic"/>
+                    <field name="allowance"/>
+                    <field name="deduction"/>
+                </group>
+                <footer>
+                    <button name="update_salary" string="Update Salary"
+                            type="object" class="btn btn-info"/>
+                    <button special="cancel" string="cancel" class="btn btn-primary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!--    Action for Wiz view of Update Salary-->
+    <record id="action_update_sal" model="ir.actions.act_window">
+        <field name="name">Update Salary</field>
+        <field name="res_model">update.salary</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{}</field>
+    </record>
+
+    <!--    Menu to update field wizard  -->
+    <menuitem id="menu_update_sal" action="action_update_sal" parent="menu_aftr_sal_child"/>
+</odoo>
