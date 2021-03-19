@@ -2,6 +2,16 @@
 
 <odoo>
 
+    <!-- TODO: 7.2. Create another wizard which will be called from a button and this wizard will not
+                    have the field for the record only for the value. -->
+    <!-- Action for Wiz view So that it works as a button -->
+    <record id="action_update_field_btn" model="ir.actions.act_window">
+        <field name="name">Update Fields</field>
+        <field name="res_model">update.field</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
     <!--****************************Form view of Team************************* -->
     <record id="form_view_team" model="ir.ui.view">
         <field name="name">form.view.team</field>
@@ -10,19 +20,28 @@
             <form>
                 <sheet>
                     <header>
+                        <button name="%(action_update_field_btn)d"
+                                type="action" string="Field"
+                                class="btn btn-outline-dark"
+                                context="{'default_name_id': active_id}"/>
+                        <button name="emp_interview" string="Interview" type="object" states="applied"/>
+                        <button name="emp_select" string="Selected" type="object" states="interviewed"/>
+                        <button name="emp_joined" string="Joined" type="object" states="selected"/>
+                        <button name="emp_reject" string="Rejected" type="object" states="interviewed"/>
+                        <button name="emp_release" string="Release" type="object" states="joined"/>
                         <button name="print_detail" string="Details" type="object"/>
                         <button name="add_team" string="New Employee" type="object"/>
                         <button name="add_seq" string="Add Sequence" type="object"/>
                         <field name="state"
                                widget="statusbar" clickable="1"/>
-<!--                        <field name="state"-->
-<!--                               widget="statusbar"-->
-<!--                               clickable="1" statusbar_visible="applied,joined,left"/>-->
+                        <!--                        <field name="state"-->
+                        <!--                               widget="statusbar"-->
+                        <!--                               clickable="1" statusbar_visible="applied,joined,left"/>-->
                     </header>
-                    <group name="grp_pr_details" string="Personal Details">
+                    <group string="Personal Details">
                         <field name="photo" widget="image" class="oe_avatar" nolabel="1" help="Upload your Photo"/>
                     </group>
-                    <group colspan="4" col="4">
+                    <group name="grp_pr_details" colspan="4" col="4">
                         <!--                        <field name="sequence"/>-->
                         <!--  TODO: 5.27. Add an inline stylesheet on the form.  -->
                         <!--  TODO: Doubt 5.28. Use existing styles of odoo on your form. Where to find
@@ -69,9 +88,9 @@
                         </field>
                         <!--TODO: 1. In the many2one field only the records which are having ‘it’
                                      should be allowed to select-->
-<!--                        <field name="department_id"-->
-<!--                               options="{'no_create':1, 'no_open':1}"-->
-<!--                               domain="[('dep_code', 'ilike', 'it')]"/>-->
+                        <!--                        <field name="department_id"-->
+                        <!--                               options="{'no_create':1, 'no_open':1}"-->
+                        <!--                               domain="[('dep_code', 'ilike', 'it')]"/>-->
 
                         <field name="work_loc"/>
                         <field name="email" widget="email"/>
@@ -81,9 +100,9 @@
                                widget="many2many_tags"/>
                         <!-- TODO: 2. In the many2many field only the records which are ending with
                                      ‘ts’ should be allowed to select.-->
-<!--                        <field name="skill_ids"-->
-<!--                               widget="many2many_tags"-->
-<!--                               domain="[('name', '=ilike', '%ts')]"/>-->
+                        <!--                        <field name="skill_ids"-->
+                        <!--                               widget="many2many_tags"-->
+                        <!--                               domain="[('name', '=ilike', '%ts')]"/>-->
 
                         <field name="reference"/>
                         <!--TODO 3. In the field which is taken for the hierarchy it should not show the current account
@@ -91,7 +110,7 @@
                                     ::: means person can't be manager of himself-->
                         <field name="parent_id"
                                domain="['&amp;', ('id', '=', [1, 4, 13]), ('id', '!=', active_id)]"
-                               widget="selection" />
+                               widget="selection"/>
                         <!-- domain="['&', ('id', '=', [1, 4, 13]), ('id', '!=', active_id)]" Gives error. -->
                         <!-- for some cases like in here to we can't give operator `&` directly like this in
                              XML, to use AND operator or some other mentioned below we need to use it lke this:
@@ -137,7 +156,10 @@
                             <button name="del_all_sal" string="Delete All Salary" type="object"/>
                         </page>
                         <page name="pg_temp" string="Template">
-                            <field name="template" help="You can modify your text here like Bold, font color etc.."/>
+                            <group name="grp_tmpl" string="Template">
+                                <field name="template"
+                                       help="You can modify your text here like Bold, font color etc.."/>
+                            </group>
                         </page>
                         <!-- TODO: 8. Add a boolean field and a text field. Put the text field in a separate page. Now
                                    when the boolean field is checked then the page should be visible else it should be
@@ -160,8 +182,19 @@
                     <button name="search_iti" string="ITI Employees" type="object"/>
                     <button name="read_rec" string="Name and experience" type="object"/>
                 </footer>
+
+                <xpath expr="/sheet" position="after">
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                        <!--  TODO: Doubt => Position is fixed no matter in which order we put fields??  -->
+                    </div>
+                </xpath>
             </form>
         </field>
+
+
     </record>
 
     <!-- Tree view of Team-->
@@ -195,7 +228,7 @@
                 <field name="percent" widget="progressbar" optional="hide"/>
                 <field name="state" optional="hide"/>
                 <!--                <field name="percent" widget="percentpie"/>-->
-<!--                <field name="dep_name"/>-->
+                <!--                <field name="dep_name"/>-->
             </tree>
         </field>
     </record>
@@ -243,15 +276,15 @@
     <!-- Calender view of Team Join Date-->
     <!-- TODO 5.7. Create a calendar view where the record will be displayed only on a single day for
                    month mode on calendar view. -->
-<!--    <record id="calendar_view_team" model="ir.ui.view">-->
-<!--        <field name="name">calendar.view.team</field>-->
-<!--        <field name="model">team.team</field>-->
-<!--        <field name="arch" type="xml">-->
-<!--            <calendar date_start="join_date" color="name">-->
-<!--                <field name="name"/>-->
-<!--            </calendar>-->
-<!--        </field>-->
-<!--    </record>-->
+    <!--    <record id="calendar_view_team" model="ir.ui.view">-->
+    <!--        <field name="name">calendar.view.team</field>-->
+    <!--        <field name="model">team.team</field>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <calendar date_start="join_date" color="name">-->
+    <!--                <field name="name"/>-->
+    <!--            </calendar>-->
+    <!--        </field>-->
+    <!--    </record>-->
 
     <!-- Calender view of Team Training -->
     <!-- TODO 5.8. Create a calendar view where the record can be displayed on multiple days for
@@ -275,26 +308,26 @@
         <field name="model">team.team</field>
         <field name="arch" type="xml">
             <!-- TODO: 5.10. Create a graph view which will be a bar chart with one measure. -->
-<!--            <graph>-->
-<!--                <field name="name" type="row"/>-->
-<!--                <field name="department_id" type="col"/>-->
-<!--                <field name="total_net_sal" type="measure"/>-->
-<!--            </graph>-->
+            <!--            <graph>-->
+            <!--                <field name="name" type="row"/>-->
+            <!--                <field name="department_id" type="col"/>-->
+            <!--                <field name="total_net_sal" type="measure"/>-->
+            <!--            </graph>-->
             <!-- TODO: 5.11. Create a graph view which will be a bar chart with multiple cols and not stacked.-->
-<!--            <graph stacked="0">-->
-<!--                <field name="name" type="row"/>-->
-<!--                <field name="gender" type="col"/>-->
-<!--                <field name="department_id" type="col"/>-->
-<!--                <field name="total_net_sal" type="measure"/>-->
-<!--            </graph>-->
+            <!--            <graph stacked="0">-->
+            <!--                <field name="name" type="row"/>-->
+            <!--                <field name="gender" type="col"/>-->
+            <!--                <field name="department_id" type="col"/>-->
+            <!--                <field name="total_net_sal" type="measure"/>-->
+            <!--            </graph>-->
             <!-- TODO: 5.12. Create a graph view which will be a bar chart with multiple cols and stacked.-->
-<!--            <graph stacked="1">-->
-<!--                <field name="name" type="row"/>-->
-<!--                <field name="gender" type="col"/>-->
-<!--                <field name="department_id" type="col"/>-->
-<!--                <field name="comp_name" type="col"/>-->
-<!--                <field name="total_net_sal" type="measure"/>-->
-<!--            </graph>-->
+            <!--            <graph stacked="1">-->
+            <!--                <field name="name" type="row"/>-->
+            <!--                <field name="gender" type="col"/>-->
+            <!--                <field name="department_id" type="col"/>-->
+            <!--                <field name="comp_name" type="col"/>-->
+            <!--                <field name="total_net_sal" type="measure"/>-->
+            <!--            </graph>-->
             <!-- TODO: 5.13. Create a graph view which will be a line chart with multiple cols.-->
             <graph type="line">
                 <field name="name" type="row"/>
@@ -304,13 +337,13 @@
                 <field name="total_net_sal" type="measure"/>
             </graph>
             <!-- TODO: 5.14. Create a graph view which will be a pie chart.-->
-<!--            <graph type="pie">-->
-<!--                <field name="name" type="row"/>-->
-<!--                <field name="gender" type="col"/>-->
-<!--                <field name="department_id" type="col"/>-->
-<!--                <field name="comp_name" type="col"/>-->
-<!--                <field name="total_net_sal" type="measure"/>-->
-<!--            </graph>-->
+            <!--            <graph type="pie">-->
+            <!--                <field name="name" type="row"/>-->
+            <!--                <field name="gender" type="col"/>-->
+            <!--                <field name="department_id" type="col"/>-->
+            <!--                <field name="comp_name" type="col"/>-->
+            <!--                <field name="total_net_sal" type="measure"/>-->
+            <!--            </graph>-->
         </field>
     </record>
 
@@ -320,31 +353,31 @@
         <field name="model">team.team</field>
         <field name="arch" type="xml">
             <!-- TODO: 5.15. Create a pivot view with single row and single col but multiple measures.  -->
-<!--            <pivot>-->
-<!--                <field name="name" type="col"/>-->
-<!--                <field name="department_id" type="row"/>-->
-<!--                <field name="total_net_sal" type="measure"/>-->
-<!--                <field name="total_gross_sal" type="measure"/>-->
-<!--            </pivot>-->
+            <!--            <pivot>-->
+            <!--                <field name="name" type="col"/>-->
+            <!--                <field name="department_id" type="row"/>-->
+            <!--                <field name="total_net_sal" type="measure"/>-->
+            <!--                <field name="total_gross_sal" type="measure"/>-->
+            <!--            </pivot>-->
             <!-- TODO: 5.16. Create a pivot view with multiple rows and multiple cols and also multiple
                              measures.-->
-<!--            <pivot>-->
-<!--                <field name="name" type="row"/>-->
-<!--                <field name="department_id" type="row"/>-->
-<!--                <field name="gender" type="col"/>-->
-<!--                <field name="marital_status" type="col"/>-->
-<!--                <field name="total_net_sal" type="measure"/>-->
-<!--                <field name="total_gross_sal" type="measure"/>-->
-<!--            </pivot>-->
+            <!--            <pivot>-->
+            <!--                <field name="name" type="row"/>-->
+            <!--                <field name="department_id" type="row"/>-->
+            <!--                <field name="gender" type="col"/>-->
+            <!--                <field name="marital_status" type="col"/>-->
+            <!--                <field name="total_net_sal" type="measure"/>-->
+            <!--                <field name="total_gross_sal" type="measure"/>-->
+            <!--            </pivot>-->
             <!-- TODO: 5.17. Create a pivot view where there is a row or col with a date field which displays
                     the quarter of the date.-->
-<!--            <pivot>-->
-<!--                <field name="name" type="col"/>-->
-<!--                <field name="department_id" type="row"/>-->
-<!--                <field name="join_date" type="col" interval="quarter"/>-->
-<!--                <field name="total_net_sal" type="measure"/>-->
-<!--                <field name="total_gross_sal" type="measure"/>-->
-<!--            </pivot>-->
+            <!--            <pivot>-->
+            <!--                <field name="name" type="col"/>-->
+            <!--                <field name="department_id" type="row"/>-->
+            <!--                <field name="join_date" type="col" interval="quarter"/>-->
+            <!--                <field name="total_net_sal" type="measure"/>-->
+            <!--                <field name="total_gross_sal" type="measure"/>-->
+            <!--            </pivot>-->
             <!-- TODO: 5.18. Create a pivot view where there is a row or col with a date field which displays
                     the month of the date along with quarter.-->
             <pivot>
@@ -369,8 +402,8 @@
                               a color picker on the kanban view to choose the color.
                         5.22. Add a dropdown on the kanban view. This should open the current record in edit
                               mode.
-                        Doubts 5.23. Add a dropdown on the kanban view it will open the records of the one2many
-                              field.-->
+                        5.23. Add a dropdown on the kanban view it will open the records of the one2many
+                              field. (For this we must have an action.) -->
             <kanban class="o_kanban_mobile">
                 <field name="photo"/>
                 <field name="id"/>
@@ -412,6 +445,11 @@
                                             <a class="dropdown-item o_kanban_toggle_fold" type="edit">Edit</a>
                                         </div>
                                         <div role="separator" class="dropdown-divider"/>
+                                        <!--  TODO: 7.9. Call a wizard from the Kanban view’s dropdown menu.  -->
+                                        <div role="menuitem">
+                                            <a type="action" name="%(action_update_field_btn)d"
+                                               context="{'default_name_id': active_id}">Update Field</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -422,14 +460,14 @@
         </field>
     </record>
 
-    <!-- Action of Team-->
+    <!--  Action of Team  -->
     <record id="action_team" model="ir.actions.act_window">
         <field name="name">Employee</field>  <!-- This name is shown in menus so give it proper name -->
         <field name="res_model">team.team</field>
         <field name="view_mode">tree,form,calendar,graph,pivot,kanban</field>
     </record>
 
-    <!-- Action of Team Graduates Technician-->
+    <!--  Action of Team Graduates Technician  -->
     <!--TODO 4. Create an action and add a domain on this action to display specific records.-->
     <record id="action_team_tech" model="ir.actions.act_window">
         <field name="name">Graduates</field>  <!-- This name is shown in menus so give it proper name -->
@@ -441,9 +479,9 @@
                   10. Now on the action where you have put domain I want the field of the domain to
                       assigned by default but only when the view is opened from that action.-->
         <field name="context">{'default_high_edu': 'graduate',
-                                'search_default_grp_by_state':1}</field>
+            'search_default_grp_by_state':1}
+        </field>
     </record>
-
 
     <!--  TODO: 5.26. Create multiple views for a model of all types (tree,form,calendar,graph). Bind
                       these views to an action using context.  -->
@@ -499,7 +537,7 @@
                         <field name="reference"/>
                         <field name="parent_id"
                                domain="['&amp;', ('id', '=', [1, 4, 13]), ('id', '!=', active_id)]"
-                               widget="selection" />
+                               widget="selection"/>
                     </group>
                     <group name="grp_attachment" string="Attachments" colspan="4" col="4">
                         <field name="resume" filename="file_name"/>
@@ -593,9 +631,10 @@
         <field name="view_mode">tree,form,calendar,graph</field>
         <field name="domain">[('department_id', '=', 3)]</field>
         <field name="context">{'form_view_ref': 'workshop_aftersales.form_view_team_tech',
-                                'tree_view_ref': 'workshop_aftersales.tree_view_team_tech',
-                                'calender_view_ref': 'workshop_aftersales.view_tech_team_calendar',
-                                'graph_view_ref': 'workshop_aftersales.view_tech_team_graph'}</field>
+            'tree_view_ref': 'workshop_aftersales.tree_view_team_tech',
+            'calender_view_ref': 'workshop_aftersales.view_tech_team_calendar',
+            'graph_view_ref': 'workshop_aftersales.view_tech_team_graph'}
+        </field>
     </record>
 
     <!--  Action for CMT Technician -->
@@ -605,9 +644,10 @@
         <field name="view_mode">tree,form,calendar,graph</field>
         <field name="domain">[('department_id', '=', 2)]</field>
         <field name="context">{'form_view_ref': 'workshop_aftersales.form_view_team_tech',
-                                'tree_view_ref': 'workshop_aftersales.tree_view_team_tech',
-                                'calender_view_ref': 'workshop_aftersales.view_tech_team_calendar',
-                                'graph_view_ref': 'workshop_aftersales.view_tech_team_graph'}</field>
+            'tree_view_ref': 'workshop_aftersales.tree_view_team_tech',
+            'calender_view_ref': 'workshop_aftersales.view_tech_team_calendar',
+            'graph_view_ref': 'workshop_aftersales.view_tech_team_graph'}
+        </field>
     </record>
 
     <!-- Menu of Workshop After sales Team application-->
@@ -640,7 +680,7 @@
         <field name="model">team.department</field>
         <field name="arch" type="xml">
             <!-- TODO: 5.2. Create an editable tree view for a model. -->
-<!--            <tree editable="top">-->
+            <!--            <tree editable="top">-->
             <tree>
                 <field name="dep_name"/>
                 <field name="dep_code"/>
@@ -714,7 +754,8 @@
         <field name="model">team.skill</field>
         <field name="arch" type="xml">
             <!-- TODO: 5.3. Make a tree view and make sure that the records can not be created or deleted. -->
-            <tree create="false" delete="false">
+            <!--            <tree create="false" delete="false">-->
+            <tree>
                 <field name="name"/>
             </tree>
         </field>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <template id="report_team_wizard_multi">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <center>
+                    <h3>Pay Slip</h3>
+                </center>
+                <t t-foreach="docs" t-as="emp">
+                    <strong>Date:</strong>
+                    <sapn t-esc="data['form']['date']"/> <!--fields used from wizard must be like this-->
+                    <br/>
+                    <strong class="text-uppercase">Name:</strong>
+                    <span t-field="emp.name"/>
+                    <br/>
+                    <strong class="text-uppercase">Email:</strong>
+                    <span t-field="emp.email"/>
+                    <br/>
+                    <strong class="text-uppercase">Department:</strong>
+                    <span t-field="emp.comp_name"/>
+                    <br/>
+                    <strong class="text-uppercase">Contact Number:</strong>
+                    <span t-field="emp.phone"/> <!--TODO 8.8 print information from model-->
+                    <br/>
+                    <strong class="text-uppercase">Reporting To:</strong>
+                    <span t-field="emp.parent_id"/>
+                    <br/>
+                    <br/>
+                    <table width="100%" class="table-primary">
+                        <thead>
+                            <th>Month</th>
+                            <th>Basic</th>
+                            <th>Allowance</th>
+                            <th>Deduction</th>
+                        </thead>
+                        <t t-foreach="emp.salary_ids" t-as="sal">
+                            <tr>
+                                <td>
+                                    <span t-field="sal.month"/>
+                                </td>
+                                <td>
+                                    <span t-field="sal.basic"/>
+                                </td>
+                                <td class="text-success">
+                                    <span t-field="sal.allowance"/>
+                                </td>
+                                <td class="text-danger">
+                                    <span t-field="sal.deduction"/>
+                                </td>
+                            </tr>
+                        </t>
+                    </table>
+                    <br/>
+                    <br/>
+                    <td>
+                        <b>Total Gross:</b>
+                    </td>
+                    <span t-esc="get_total_gross(emp.salary_ids)"/>
+                    <br/>
+                    <td>
+                        <b>House Rent Allowance:</b>
+                    </td>
+                    <span t-esc="data['form']['house_rent_allowance']"/>  <!--TODO 8.8 wizard's field-->
+                    <br/>
+                    <td>
+                        <b>CTC:</b>
+                    </td>
+                    <span id="check" t-esc="get_ctc(emp.salary_ids, data['form']['house_rent_allowance'])"/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <b>
+                        <h3>
+                            <span t-esc="sign"/>
+                        </h3>
+                    </b>
+                    <br/>
+                    <br/>
+                    <center>
+                        <h8>
+                            <b>NOTE:</b>
+                            Benefit for all employee will be 10000, Total Gross + Benefits + House Rent Allowance = CTC
+                        </h8>
+                    </center>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

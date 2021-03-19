@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
+<!--  If we want to use our own style we can use it by template tag  -->
+
 <odoo>
     <template id="wrksp_style" name="wrksp style" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">

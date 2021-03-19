@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+
+    <!--    Action for Wiz view to Update Education  -->
+    <record id="action_update_edu" model="ir.actions.act_window">
+        <field name="name">Update Education</field>
+        <field name="res_model">update.exp</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!--    Form view for Wizard to update Experience -->
+    <record id="form_view_wiz_exp" model="ir.ui.view">
+        <field name="name">form.view.wiz.exp</field>
+        <field name="model">update.exp</field>
+        <field name="arch" type="xml">
+            <form string="Update Experience">
+                <group name="grp_wiz_exp">
+                    <field name="name_id" required="1"/>
+                    <field name="exp"/>
+                </group>
+                <footer>
+                    <button name="update_exp" string="Experience" type="object" class="btn btn-info"/>
+                    <button special="cancel" string="cancel" class="btn btn-primary"/>
+                    <button name="%(action_update_edu)d" string="Education" type="action"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!--    Action for Wiz view to Update Experience  -->
+    <record id="action_update_exp" model="ir.actions.act_window">
+        <field name="name">Update Experience</field>
+        <field name="res_model">update.exp</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!--    Form view for Wizard to update Education -->
+    <record id="form_view_wiz_edu" model="ir.ui.view">
+        <field name="name">form.view.wiz.edu</field>
+        <field name="model">update.exp</field>
+        <field name="arch" type="xml">
+            <form string="Update Education">
+                <group name="grp_wiz_edu">
+                    <field name="name_id" required="1"/>
+                    <field name="high_edu"/>
+                    <field name="exp"/>
+                </group>
+                <footer>
+                    <button name="update_edu" string="Education" type="object" class="btn btn-info"/>
+                    <button special="cancel" string="cancel" class="btn btn-primary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!--    Menu to update field wizard  -->
+    <menuitem id="menu_update_exp" action="action_update_exp" parent="menu_aftr_sal_child"/>
+</odoo>

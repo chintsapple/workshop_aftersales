@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--View for qweb_report_wiz_multy_field.py -->
+
+<odoo>
+<!--    Form view for Employee report wizard  -->
+    <record id="form_view_team_report_wiz_mul" model="ir.ui.view">
+        <field name="name">form.view.team.report.wiz.mul</field>
+        <field name="model">qweb.report.wizard.multi</field>
+        <field name="arch" type="xml">
+            <form>
+                <group id="grp_rep_wiz_mul">
+                    <field name="date" required="1"/>
+                    <field name="department_id"/>
+                    <field name="employee_ids" widget="many2many_tags"/>
+                </group>
+                <footer>
+                    <button name="print_report" string="PDF Report" type="object"/>
+                    <button special="cancel" string="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+<!--    Action for the employee report wizard  -->
+    <record id="action_rep_wiz_mul" model="ir.actions.act_window">
+        <field name="name">Team Multi Field Report</field>
+        <field name="res_model">qweb.report.wizard.multi</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+<!--    Menu for Employee report wizard-->
+    <menuitem id="menu_rep_wiz_mul" action="action_rep_wiz_mul" parent="menu_reporting"/>
+</odoo>

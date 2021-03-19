@@ -4,6 +4,11 @@ from odoo.exceptions import ValidationError
 
 
 class Team(models.Model):
+
+    # TODO 6.12. Add the Chatter functionality in your existing module. Add features like
+    #            messaging, log, activity, followers and attachments.
+
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _name = 'team.team'
     _description = 'Team'
     _auto = True  # this by default true, here I have mentioned for understanding only,
@@ -64,7 +69,10 @@ class Team(models.Model):
                                  ('anand', 'Anand'),
                                  ('surat', 'Surat')], 'Work Location')
     phone = fields.Char('Phone')
-    email = fields.Char('Email address')
+
+    # TODO 6.13. Make a tracking of the records such that whenever a field is modified you will
+    #            have the track of it in your chatter.
+    email = fields.Char('Email address', tracking=True)
 
     salary_ids = fields.One2many('team.salary', 'employee_id', 'Salaries')
     total_gross_sal = fields.Float('Total Gross', compute='_calc_total_sal', store=True)
@@ -179,15 +187,15 @@ class Team(models.Model):
         print('all_team', all_team)
         positive_blood = all_team.filtered(lambda r: r.blood in ('ab+', 'a+', 'b+', 'o+'))
         print("17. Employee with Positive Blood Group:", positive_blood)
-        # for p_blood in positive_blood:
-        #     print(p_blood.name)
+        for p_blood in positive_blood:
+            print(p_blood.name)
         exp_emp = all_team.mapped(lambda c: c.comp_name + '-' + str(c.exp))
         print("19. ==>")
         for emp in exp_emp:
             print("\t", emp)
 
         print('20. List of values of Title field:', all_team.mapped('title'))
-        print('21. Recordset in descending order of Title field:', all_team.sorted('title', reverse=True))
+        # print('21. Recordset in descending order of Title field:', all_team.sorted('title', reverse=True))
         # TODO: TypeError: '<' not supported between instances of 'str' and 'bool'
         #                   Got this error comes due to I have not assigned `Title` field to all employee.
         #                   So when I tried to get `all_team.mapped('title')` it gives output like this:
@@ -197,38 +205,78 @@ class Team(models.Model):
         #          False, False, False, False, False], this all False is boolean field because I haven't give any
         #          values in it so boolean values can't be sorted and other fields is a string where as False is
         #          boolean so sorted operation can't be performed, by giving values in `Title` field it will work.
+        #
+        # all_tech = self.search([])
+        # graduate_tech = self.search([('high_edu', '=', 'graduate')])
+        # iti_tech = self.search([('high_edu', '=', 'iti')])
+        #
+        # # checking subset `<`
+        # print("22. ==>")
+        # print("\t graduate_tech is subset of all_tech: ", graduate_tech < all_tech)
+        # print("\t graduate_tech is subset of iti_tech: ", graduate_tech < iti_tech)
+        # print("\t iti_tech is subset of all_tech: ", iti_tech < all_tech)
+        # print("\t iti_tech is subset of graduate_tech: ", iti_tech < graduate_tech)
+        # print("\t all_tech is subset of graduate_tech:", all_tech < graduate_tech)
+        # print("\t all_tech is subset of iti_tech:", all_tech < iti_tech)
+        #
+        # # Checking superset `>`
+        # print("\t graduate_tech is superset of all_tech: ", graduate_tech > all_tech)
+        # print("\t graduate_tech is superset of iti_tech: ", graduate_tech > iti_tech)
+        # print("\t iti_tech is superset of all_tech: ", iti_tech > all_tech)
+        # print("\t iti_tech is superset of graduate_tech: ", iti_tech > graduate_tech)
+        # print("\t all_tech is superset of graduate_tech:", all_tech > graduate_tech)
+        # print("\t all_tech is superset of iti_tech:", all_tech > iti_tech)
+        #
+        # # Union, Intersection and difference
+        # print("23. ==>")
+        # print("\t All Technician: ", all_tech)
+        # print("\t Graduate Technician: ", graduate_tech)
+        # print("\t ITI Technician: ", iti_tech)
+        #
+        # print("\t UNION of ITI Technician and Graduate Technician: ", iti_tech | graduate_tech)
+        # print("\t INTERSECTION of All Technician and Graduate Technician: ", all_tech & graduate_tech)
+        # print("\t DIFFERENCE of All Technician and ITI Technician: ", all_tech - iti_tech)
+        # print("*" * 100)
 
-        all_tech = self.search([])
-        graduate_tech = self.search([('high_edu', '=', 'graduate')])
-        iti_tech = self.search([('high_edu', '=', 'iti')])
+    def emp_interview(self):
+        """
+        This method will change state of candidates application to Interviewed.
+        @:param self: object pointer
+        """
+        for emp in self:  # this is used to assign values here we assign employee state
+            emp.state = 'interviewed'
 
-        # checking subset `<`
-        print("22. ==>")
-        print("\t graduate_tech is subset of all_tech: ", graduate_tech < all_tech)
-        print("\t graduate_tech is subset of iti_tech: ", graduate_tech < iti_tech)
-        print("\t iti_tech is subset of all_tech: ", iti_tech < all_tech)
-        print("\t iti_tech is subset of graduate_tech: ", iti_tech < graduate_tech)
-        print("\t all_tech is subset of graduate_tech:", all_tech < graduate_tech)
-        print("\t all_tech is subset of iti_tech:", all_tech < iti_tech)
+    def emp_select(self):
+        """
+        This method will change state of candidates application to Selected.
+        @:param self: object pointer
+        """
+        for emp in self:
+            emp.state = 'selected'
 
-        # Checking superset `>`
-        print("\t graduate_tech is superset of all_tech: ", graduate_tech > all_tech)
-        print("\t graduate_tech is superset of iti_tech: ", graduate_tech > iti_tech)
-        print("\t iti_tech is superset of all_tech: ", iti_tech > all_tech)
-        print("\t iti_tech is superset of graduate_tech: ", iti_tech > graduate_tech)
-        print("\t all_tech is superset of graduate_tech:", all_tech > graduate_tech)
-        print("\t all_tech is superset of iti_tech:", all_tech > iti_tech)
+    def emp_joined(self):
+        """
+        This method will change state of candidates application to Joined.
+        @:param self: object pointer
+        """
+        for emp in self:
+            emp.state = 'joined'
 
-        # Union, Intersection and difference
-        print("23. ==>")
-        print("\t All Technician: ", all_tech)
-        print("\t Graduate Technician: ", graduate_tech)
-        print("\t ITI Technician: ", iti_tech)
+    def emp_reject(self):
+        """
+        This method will change state of candidates application to Rejected.
+        @:param self: object pointer
+        """
+        for emp in self:
+            emp.state = 'rejected'
 
-        print("\t UNION of ITI Technician and Graduate Technician: ", iti_tech | graduate_tech)
-        print("\t INTERSECTION of All Technician and Graduate Technician: ", all_tech & graduate_tech)
-        print("\t DIFFERENCE of All Technician and ITI Technician: ", all_tech - iti_tech)
-        print("*" * 100)
+    def emp_release(self):
+        """
+        This method will change state of candidates application to Left.
+        @:param self: object pointer
+        """
+        for emp in self:
+            emp.state = 'left'
 
     # TODO: 24. Add a button on the form view when you click on this button it will create a
     #           record on a new model which does not have a relation with the current model.
@@ -238,9 +286,10 @@ class Team(models.Model):
         Create new record for Skill Model
         """
         skill_obj = self.env['team.skill']
-        skill_obj.create([{'name': 'Wiring Repair'},
-                          {'name': 'Measurements'},
-                          {'name': 'Break Bleeding'}])
+        # skill_obj.create([{'name': 'Wiring Repair'},
+        #                   {'name': 'Measurements'},
+        #                   {'name': 'Break Bleeding'}])
+        skill_obj.create([{'name': 'Final Inspection'}])
 
     def add_team(self):
         """
@@ -451,11 +500,11 @@ class Team(models.Model):
                 emp.incentive = 900.0
             elif emp.gender == 'male' or emp.gender == 'female' and emp.marital_status == 'married':
                 emp.incentive = 1200.0
-            # if not emp.marital_status:
-            #     res['warning'] = {
-            #         'title': 'Marital Status',
-            #         'message': 'Marital Status can not be empty.'
-            #     }
+            if not emp.marital_status:
+                res['warning'] = {
+                    'title': 'Marital Status',
+                    'message': 'Marital Status can not be empty.'
+                }
             return res
 
     # TODO: 4.9. Add an onchange method which will add a domain on a many2one and
@@ -531,29 +580,29 @@ class Department(models.Model):
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
         res = super(Department, self).fields_view_get(view_id=view_id, view_type=view_type,
                                                       toolbar=toolbar, submenu=submenu)
-        # print('res==========>', res)
-        print("View: ", view_type)
-        # print('arch: ', res['arch'])
-        print('fields: ', res['fields'])
-        print('sortable:', res['fields']['dep_name']['sortable'])
-
-        if view_type == 'tree':
-            # res['fields']['dep_name']['store'] = False
-            # TODO: Why it's not working if I set store = False, for sortable and searchable.
-            #     Solution: This will not working because it only works for records store
-            #               which is by default False, not for default store = True.
-            res['fields']['dep_name']['sortable'] = False
-            print('=' * 30)
-            print('View Type: ', view_type)
-            print('For tree view sortable:', res['fields']['dep_name']['sortable'])
-            print('=' * 30)
-
-        # print('Update Fields: ', res['fields'])
-        # print('For tree view sortable:', res['fields']['dep_name']['sortable'])
-
-        if res['fields'].get('dep_name', False):
-            res['fields']['dep_name']['required'] = True
-        print('Updated fields: ', res['fields'])
+        # # print('res==========>', res)
+        # print("View: ", view_type)
+        # # print('arch: ', res['arch'])
+        # print('fields: ', res['fields'])
+        # print('sortable:', res['fields']['dep_name']['sortable'])
+        #
+        # if view_type == 'tree':
+        #     # res['fields']['dep_name']['store'] = False
+        #     # TODO: Why it's not working if I set store = False, for sortable and searchable.
+        #     #     Solution: This will not working because it only works for records store
+        #     #               which is by default False, not for default store = True.
+        #     res['fields']['dep_name']['sortable'] = False
+        #     print('=' * 30)
+        #     print('View Type: ', view_type)
+        #     print('For tree view sortable:', res['fields']['dep_name']['sortable'])
+        #     print('=' * 30)
+        #
+        # # print('Update Fields: ', res['fields'])
+        # # print('For tree view sortable:', res['fields']['dep_name']['sortable'])
+        #
+        # if res['fields'].get('dep_name', False):
+        #     res['fields']['dep_name']['required'] = True
+        # print('Updated fields: ', res['fields'])
         return res
 
 
@@ -562,9 +611,9 @@ class Salary(models.Model):
     _description = 'Salary'
 
     month = fields.Selection([(str(ele), str(ele)) for ele in range(1, 13)], 'Month')
-    basic = fields.Float('Basic')
+    basic = fields.Float('Basic', tracking=True)
     allowance = fields.Float('Allowance')
-    deduction = fields.Float('Deduction')
+    deduction = fields.Float('Deduction', tracking=True)
     employee_id = fields.Many2one('team.team', 'Employee')
     # employee_id = fields.Many2one('team.team', 'Employee', ondelete='cascade')
     gross_sal = fields.Float('Gross', compute='_calc_net_gross')
@@ -578,10 +627,14 @@ class Salary(models.Model):
 
 
 class Skill(models.Model):
+
     _name = 'team.skill'
     _description = 'Skill'
 
     name = fields.Char('Name')
+
+    location_id = fields.Many2one('Workshop Location')
+    pin_code = fields.Char('Pin Code')
 
 # TODO: Use domain in action from other model, like use to create action domain to show only `technicians`.
 #       Hierarchy is not created.
