@@ -19,6 +19,7 @@ class UpdateSalary(models.TransientModel):
 
         salary = self.employee_id
         print("context", self._context)
+        print(self.env.context)
         # {'lang': 'en_US', 'tz': 'Asia/Calcutta', 'uid': 2, 'allowed_company_ids': [1]}
 
         salary.write({
@@ -28,3 +29,4 @@ class UpdateSalary(models.TransientModel):
                 'allowance': self.allowance,
                 'deduction': self.deduction})]
         })
+

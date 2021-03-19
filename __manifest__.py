@@ -15,6 +15,13 @@
         'views/update_field_wizard.xml',
         'views/update_salary_wizard_view.xml',
         'views/update_exp_wiz_view.xml',
+        'views/team_analysis_report_view.xml',
+        'views/workshop_qweb_reports.xml',
+        'views/parser_qweb_report_team_template.xml',
+        'views/qweb_report_wizard.xml',
+        'views/qweb_report_wiz_multy_field_view_template.xml',
+        'views/qweb_report_wiz_multy_field_view.xml',
+        'views/xls_report_team_wiz_view.xml',
     ],
     'auto_install': False,
     'application': True  # True means it shows as a application not as a supporting module

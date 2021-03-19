@@ -12,4 +12,9 @@ access_update_field_user,access.update_field.manager,model_update_field,grp_usr,
 access_update_salary_manager,access.update_salary.manager,model_update_salary,grp_mngr,1,1,1,1
 access_update_salary_user,access.update_salary.manager,model_update_salary,grp_usr,1,1,1,0
 access_update_exp_manager,access.update_exp.manager,model_update_exp,grp_mngr,1,1,1,1
-access_update_exp_user,access.update_exp.manager,model_update_exp,grp_usr,1,1,1,0
+access_update_exp_user,access.update_exp.user,model_update_exp,grp_usr,1,1,1,0
+access_team_analysis_manager,access.team_analysis.manager,model_team_analysis,grp_mngr,1,1,1,0
+access_qweb_report_wiz_manager,access.qweb_report_wiz.manager,model_qweb_report_wiz,grp_mngr,1,1,1,0
+access_parser_report_manager,access.parser_report.manager,model_report_workshop_aftersales_report_team,grp_mngr,1,1,1,0
+access_qweb_report_wiz_multi_manager,access.qweb_report_wiz_multi.manager,model_qweb_report_wizard_multi,grp_mngr,1,1,1,0
+access_team_report_xls_wiz_multi_manager,access.team_report_xls_wiz_multi.manager,model_team_report_xls_wiz,grp_mngr,1,1,1,0

@@ -14,6 +14,7 @@
                     <field name="per_address"/>
                 </group>
                 <footer>
+<!--               TODO: 7.7. Call a wizard from a button having the type to be object and not action.-->
                     <button name="update_field" string="Update" type="object" class="btn btn-info"/>
                     <button special="cancel" string="cancel" class="btn btn-primary"/>
                 </footer>

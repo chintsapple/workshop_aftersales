@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+<!--    Form view for Employee report wizard  -->
+    <record id="form_view_team_report_xls_wiz" model="ir.ui.view">
+        <field name="name">form.view.team.report.xls.wiz</field>
+        <field name="model">team.report.xls.wiz</field>
+        <field name="arch" type="xml">
+            <form>
+                <group id="grp_rep_xls_wiz_team">
+                    <field name="date" required="1"/>
+                    <field name="department_id"/>
+                    <field name="employee_ids" widget="many2many_tags"/>
+                </group>
+                <footer>
+                    <button name="print_xls_report" string="Excel Report" type="object"/>
+                    <button special="cancel" string="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+<!--    Action for the employee report wizard  -->
+    <record id="action_rep_xls_wiz_team" model="ir.actions.act_window">
+        <field name="name">Employee Excel Report</field>
+        <field name="res_model">team.report.xls.wiz</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+<!--    Menu for Employee report wizard-->
+    <menuitem id="menu_rep_xls_wiz_team" action="action_rep_xls_wiz_team" parent="menu_reporting"/>
+</odoo>

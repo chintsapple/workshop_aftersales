@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+<!--    Tree View for Team Analysis Report-->
+    <record id="tree_view_team_analysis" model="ir.ui.view">
+        <field name="name">tree.view.team.analysis</field>
+        <field name="model">team.analysis</field>
+        <field name="arch" type="xml">
+            <tree>
+<!--                <field name="employee_id"/>-->
+                <field name="name"/>
+                <field name="department_id"/>
+                <field name="month"/>
+                <field name="age"/>
+                <field name="exp"/>
+                <field name="basic"/>
+                <field name="allowance"/>
+                <field name="deduction"/>
+                <field name="total_gross_sal"/>
+                <field name="total_net_sal"/>
+                <field name="create_uid"/>
+            </tree>
+        </field>
+    </record>
+
+<!--    Pivot View for Team Analysis Report-->
+    <record id="pivot_view_team_ana" model="ir.ui.view">
+        <field name="name">pivot.view.team.ana</field>
+        <field name="model">team.analysis</field>
+        <field name="arch" type="xml">
+            <pivot>
+<!--                <field name="employee_id" type="row"/>-->
+                <field name="name" type="row"/>
+                <field name="department_id" type="row"/>
+                <field name="month" type="col"/>
+                <field name="basic" type="measure"/>
+                <field name="allowance" type="measure"/>
+                <field name="total_gross_sal" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+<!--    Action for Team Analysis  -->
+    <record id="team_emp_analysis" model="ir.actions.act_window">
+        <field name="name">Team Analysis</field>
+        <field name="res_model">team.analysis</field>
+        <field name="view_mode">tree,pivot</field>
+    </record>
+
+<!--    Menu for Reporting-->
+    <menuitem id="menu_reporting" name="Reports" parent="menu_aftr_sal"/>
+
+<!--    Menu for Team Analysis report  -->
+    <menuitem id="menu_team_analysis" action="team_emp_analysis" parent="menu_reporting"/>
+</odoo>

@@ -445,6 +445,11 @@
                                             <a class="dropdown-item o_kanban_toggle_fold" type="edit">Edit</a>
                                         </div>
                                         <div role="separator" class="dropdown-divider"/>
+                                        <!--  TODO: 7.9. Call a wizard from the Kanban view’s dropdown menu.  -->
+                                        <div role="menuitem">
+                                            <a type="action" name="%(action_update_field_btn)d"
+                                               context="{'default_name_id': active_id}">Update Field</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

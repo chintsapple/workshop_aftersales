@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <!--    Form view for qweb report wizard -->
+    <record id="qweb_rep_wiz_form" model="ir.ui.view">
+        <field name="name">qweb.rep.wiz.form</field>
+        <field name="model">qweb.report.wiz</field>
+        <field name="arch" type="xml">
+            <form>
+                <group name="grp_qweb_wiz">
+                    <field name="name_id" required="1"/>
+                </group>
+                <footer>
+                    <button name="html_qweb" type="object" string="HTML" class="btn btn-outline-dark"/>
+                    <button name="pdf_qweb" type="object" string="PDF" class="btn btn-outline-dark"/>
+                    <button special="cancel" string="Cancel" class="btn btn-primary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!--    Action for qweb report wizard-->
+    <record id="action_qweb_rep_wiz" model="ir.actions.act_window">
+        <field name="name">Qweb Report</field>
+        <field name="res_model">qweb.report.wiz</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!--    Menu For Qweb report wizard  -->
+    <menuitem id="menu_qweb_report_wizard" action="action_qweb_rep_wiz" parent="menu_reporting"/>
+</odoo>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+
+<!--    TODO: 8.2. Create a Qweb report to print an on screen report for your model. -->
+    <record id="team_report_html" model="ir.actions.report">
+        <field name="name">Team Report - HTML</field>
+        <field name="model">team.team</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">workshop_aftersales.report_team</field>
+        <field name="report_file">workshop_aftersales.report_team</field>
+        <field name="print_report_name">'Team Report'</field>
+        <field name="binding_model_id" ref="model_team_team"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+<!--    Employee PDF Report From Wizard -->
+    <record id="team_report_pdf_wiz" model="ir.actions.report">
+        <field name="name">Team Report - PDF Wizard</field>
+        <field name="model">team.team</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">workshop_aftersales.report_team_wiz</field>
+        <field name="report_file">workshop_aftersales.report_team_wiz</field>
+        <field name="print_report_name">'Team Report'</field>
+        <field name="binding_model_id" ref="model_team_team"/>
+        <field name="binding_type">report</field>
+    </record>
+
+<!--    TODO: 8.3. Create a Qweb report to print a PDF report for your model. -->
+<!--    PDF report Team-->
+    <record id="team_report_pdf" model="ir.actions.report">
+        <field name="name">Team Report - PDF</field>
+        <field name="model">team.team</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">workshop_aftersales.report_team</field>
+        <field name="report_file">workshop_aftersales.report_team</field>
+        <field name="print_report_name">'Team Report'</field>
+        <field name="binding_model_id" ref="model_team_team"/>
+        <field name="binding_type">report</field>
+    </record>
+
+<!--    TODO: 8.8 -->
+    <!--    PDF report of Team Wizard for multiple field -->
+    <record id="action_team_report_wiz_pdf" model="ir.actions.report">
+        <field name="name">Team Report - PDF Wizard</field>
+        <field name="model">team.team</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">workshop_aftersales.report_team_wizard_multi</field>
+        <field name="report_file">workshop_aftersales.report_team_wizard_multi</field>
+        <field name="print_report_name">'Team Report Wizard'</field>
+        <field name="binding_model_id" ref="model_team_team"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>
